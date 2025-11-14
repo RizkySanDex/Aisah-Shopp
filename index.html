@@ -345,25 +345,113 @@
             font-size: 12px;
         }
 
-        .delete-all-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: background 0.3s;
-        }
-
-        .delete-all-btn:hover {
-            background: #c0392b;
-        }
-
         .title-section {
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+
+        /* Admin Management Section */
+        .admin-management {
+            margin-top: 25px;
+            border-top: 2px solid #f0f0f0;
+            padding-top: 20px;
+        }
+
+        .admin-section-title {
+            text-align: left;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .product-item:last-child {
+            border-bottom: none;
+        }
+
+        .product-item-info {
+            flex: 1;
+            text-align: left;
+        }
+
+        .product-item-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .product-item-price {
+            font-size: 12px;
+            color: #e74c3c;
+        }
+
+        .product-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .edit-btn {
+            color: #3498db;
+        }
+
+        .edit-btn:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .delete-btn {
+            color: #e74c3c;
+        }
+
+        .delete-btn:hover {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .danger-zone {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff5f5;
+            border-radius: 8px;
+            border: 1px solid #fed7d7;
+        }
+
+        .danger-title {
+            color: #e53e3e;
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         @media (max-width: 480px) {
@@ -415,7 +503,6 @@
                     <span>Koleksi Toko Aisah</span>
                     <span class="product-count" id="productCount">0 produk</span>
                 </div>
-                <button class="delete-all-btn" onclick="deleteAllProducts()">Hapus Semua</button>
             </div>
             
             <div class="product-grid" id="productGrid">
@@ -435,9 +522,9 @@
                 </button>
             </div>
             
-               <div class="footer">
-                <p>© 2023 MyLinkTree. All rights reserved.</p>
-                <p style="font-size: 12px; margin-top: 5px;">Tekan Shift+A untuk akses admin</p>
+            <div class="footer">
+                <p>© 2023 Aisah-Shopp. All rights reserved.</p>
+                <p style="font-size: 12px; margin-top: 5px;"></p>
             </div>
         </div>
     </div>
@@ -468,6 +555,27 @@
                 <div class="admin-buttons">
                     <button class="btn btn-primary" id="saveProduct">Simpan Produk</button>
                     <button class="btn btn-secondary" id="closeAdmin">Tutup Panel</button>
+                </div>
+            </div>
+
+            <!-- Admin Management Section -->
+            <div class="admin-management">
+                <div class="admin-section-title">
+                    <span>Kelola Produk</span>
+                </div>
+                
+                <div class="product-list" id="adminProductList">
+                    <!-- Daftar produk untuk dikelola akan dimuat di sini -->
+                </div>
+
+                <div class="danger-zone">
+                    <div class="danger-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Zona Berbahaya
+                    </div>
+                    <button class="btn btn-secondary" onclick="deleteAllProducts()" style="width: 100%;">
+                        <i class="fas fa-trash"></i> Hapus Semua Produk
+                    </button>
                 </div>
             </div>
         </div>
@@ -551,6 +659,7 @@
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
         const pageInfo = document.getElementById('pageInfo');
+        const adminProductList = document.getElementById('adminProductList');
 
         // Fungsi untuk menghitung total halaman
         function calculateTotalPages() {
@@ -618,6 +727,44 @@
             
             // Update pagination
             updatePaginationControls();
+            
+            // Update admin product list
+            renderAdminProductList();
+        }
+
+        // Tampilkan daftar produk di panel admin
+        function renderAdminProductList() {
+            adminProductList.innerHTML = '';
+            
+            if (products.length === 0) {
+                adminProductList.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: #7f8c8d;">
+                        <i class="fas fa-box-open" style="font-size: 24px; margin-bottom: 10px;"></i>
+                        <p>Belum ada produk</p>
+                    </div>
+                `;
+            } else {
+                products.forEach((product, index) => {
+                    const productItem = document.createElement('div');
+                    productItem.className = 'product-item';
+                    
+                    productItem.innerHTML = `
+                        <div class="product-item-info">
+                            <div class="product-item-name">${product.name}</div>
+                            <div class="product-item-price">${product.price}</div>
+                        </div>
+                        <div class="product-item-actions">
+                            <button class="action-btn edit-btn" onclick="editProduct(${index})" title="Edit Produk">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteProduct(${index})" title="Hapus Produk">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    adminProductList.appendChild(productItem);
+                });
+            }
         }
 
         // Fungsi untuk ganti halaman
@@ -637,7 +784,7 @@
                 return;
             }
             
-            if (confirm('Apakah Anda yakin ingin menghapus semua produk?')) {
+            if (confirm('Apakah Anda yakin ingin menghapus semua produk? Tindakan ini tidak dapat dibatalkan!')) {
                 products = [];
                 currentPage = 1; // Reset ke halaman 1
                 saveProductsToStorage(products);
@@ -646,19 +793,49 @@
             }
         }
 
+        // Fungsi untuk menghapus produk tertentu
+        function deleteProduct(index) {
+            if (confirm(`Apakah Anda yakin ingin menghapus produk "${products[index].name}"?`)) {
+                products.splice(index, 1);
+                saveProductsToStorage(products);
+                renderProducts();
+                showHint('Produk berhasil dihapus');
+                
+                // Jika halaman saat ini kosong setelah penghapusan, kembali ke halaman sebelumnya
+                if (getProductsForPage(currentPage).length === 0 && currentPage > 1) {
+                    currentPage--;
+                    renderProducts();
+                }
+            }
+        }
+
+        // Fungsi untuk mengedit produk
+        function editProduct(index) {
+            const product = products[index];
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productPrice').value = product.price;
+            document.getElementById('productImage').value = product.image;
+            document.getElementById('productLink').value = product.link;
+            editIndexInput.value = index;
+            
+            // Scroll ke form input
+            document.querySelector('.admin-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
         // Fungsi untuk menampilkan/menyembunyikan panel admin
         function toggleAdminPanel() {
             if (adminPanel.style.display === 'flex') {
                 adminPanel.style.display = 'none';
                 showHint('Panel Admin Ditutup');
-            } else {
-                adminPanel.style.display = 'flex';
-                // Reset form saat membuka panel
+                // Reset form saat menutup panel
                 document.getElementById('productName').value = '';
                 document.getElementById('productPrice').value = '';
                 document.getElementById('productImage').value = '';
                 document.getElementById('productLink').value = '';
                 editIndexInput.value = '';
+            } else {
+                adminPanel.style.display = 'flex';
+                renderAdminProductList();
             }
         }
 
@@ -706,7 +883,12 @@
             // Simpan ke localStorage
             saveProductsToStorage(products);
             renderProducts();
-            toggleAdminPanel();
+            
+            // Reset form
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productImage').value = '';
+            document.getElementById('productLink').value = '';
         }
 
         // Event listener untuk shortcut keyboard
