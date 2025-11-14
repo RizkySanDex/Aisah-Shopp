@@ -646,6 +646,22 @@
         }
     </style>
 </head>
+<!-- Cache Busting Script -->
+<script>
+    // Force clear cache on load
+    if (window.location.search.indexOf('refresh') === -1 && window.location.search.indexOf('v=') === -1) {
+        window.location.href = window.location.href + (window.location.search ? '&' : '?') + 'v=' + new Date().getTime();
+    }
+    
+    // Clear old localStorage versions
+    const currentVersion = '1.2.0';
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('linktree_products') && !key.includes(currentVersion)) {
+            localStorage.removeItem(key);
+        }
+    }
+</script>
 <body>
     <div class="container">
         <div class="card">
