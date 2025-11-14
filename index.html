@@ -17,9 +17,6 @@
             background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             color: #333;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
 
@@ -34,23 +31,18 @@
             border-radius: 20px;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
             overflow: hidden;
-            padding: 30px;
+            padding: 25px;
             text-align: center;
-            transition: transform 0.3s ease;
-            position: relative;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
+            margin-bottom: 20px;
         }
 
         .profile {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .profile-img {
-            width: 130px;
-            height: 130px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             object-fit: cover;
             border: 5px solid #6a11cb;
@@ -59,20 +51,101 @@
         }
 
         .profile h1 {
-            font-size: 28px;
+            font-size: 24px;
             margin-bottom: 8px;
             color: #2c3e50;
         }
 
         .profile p {
             color: #7f8c8d;
-            font-size: 16px;
-            margin-bottom: 20px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        /* Search Bar Styles */
+        .search-container {
+            margin: 15px 0;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+
+        /* Category Styles - FIXED */
+        .categories-container {
+            margin: 15px 0 20px 0;
+        }
+
+        .categories-title {
+            text-align: left;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .category-btn {
+            padding: 10px 5px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            color: #666;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .category-btn:hover {
+            border-color: #6a11cb;
+            color: #6a11cb;
+        }
+
+        .category-btn.active {
+            background: #6a11cb;
+            color: white;
+            border-color: #6a11cb;
+            box-shadow: 0 4px 8px rgba(106, 17, 203, 0.3);
         }
 
         .section-title {
             text-align: left;
-            margin: 25px 0 15px;
+            margin: 20px 0 15px;
             color: #2c3e50;
             font-size: 18px;
             border-bottom: 2px solid #f0f0f0;
@@ -85,9 +158,8 @@
         .product-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
             margin-top: 15px;
-            min-height: 400px;
         }
 
         .product-card {
@@ -97,6 +169,8 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
             border: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
         }
 
         .product-card:hover {
@@ -106,32 +180,47 @@
 
         .product-image {
             width: 100%;
-            height: 160px;
+            height: 140px;
             object-fit: cover;
         }
 
         .product-info {
             padding: 12px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
         }
 
         .product-name {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: #2c3e50;
             line-height: 1.4;
-            height: 40px;
+            height: 36px;
             overflow: hidden;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
+            flex-grow: 1;
         }
 
         .product-price {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             color: #e74c3c;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+        }
+
+        .product-category {
+            font-size: 10px;
+            color: #7f8c8d;
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 8px;
+            align-self: flex-start;
         }
 
         .buy-button {
@@ -143,8 +232,9 @@
             border-radius: 6px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             transition: background 0.3s;
+            margin-top: auto;
         }
 
         .buy-button:hover {
@@ -154,20 +244,20 @@
         .social-links {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
             margin-top: 20px;
         }
 
         .social-link {
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background-color: #f8f9fa;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #6a11cb;
-            font-size: 20px;
+            font-size: 18px;
             text-decoration: none;
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
@@ -176,14 +266,15 @@
         .social-link:hover {
             background-color: #6a11cb;
             color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 7px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
         }
 
         .footer {
-            margin-top: 25px;
+            margin-top: 20px;
             color: #bdc3c7;
-            font-size: 14px;
+            font-size: 12px;
+            text-align: center;
         }
 
         /* Pagination Styles */
@@ -191,7 +282,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             margin-top: 20px;
             padding: 10px;
         }
@@ -200,32 +291,31 @@
             background: #6a11cb;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 15px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            font-size: 13px;
         }
 
         .pagination-btn:hover:not(:disabled) {
             background: #580da8;
-            transform: translateY(-2px);
         }
 
         .pagination-btn:disabled {
             background: #bdc3c7;
             cursor: not-allowed;
-            transform: none;
         }
 
         .page-info {
             color: #2c3e50;
             font-weight: 600;
-            font-size: 14px;
-            min-width: 100px;
+            font-size: 13px;
+            min-width: 90px;
             text-align: center;
         }
 
@@ -241,16 +331,17 @@
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
 
         .admin-content {
             background: white;
-            padding: 30px;
+            padding: 25px;
             border-radius: 15px;
-            width: 90%;
+            width: 100%;
             max-width: 500px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            max-height: 90vh;
+            max-height: 85vh;
             overflow-y: auto;
         }
 
@@ -258,13 +349,13 @@
             text-align: center;
             margin-bottom: 20px;
             color: #2c3e50;
-            font-size: 24px;
+            font-size: 22px;
         }
 
         .admin-form {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         .form-group {
@@ -277,13 +368,14 @@
             margin-bottom: 5px;
             font-weight: 600;
             color: #2c3e50;
+            font-size: 14px;
         }
 
-        .form-group input {
+        .form-group input, .form-group select {
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 6px;
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .admin-buttons {
@@ -293,13 +385,14 @@
         }
 
         .btn {
-            padding: 12px 20px;
+            padding: 12px 15px;
             border: none;
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             flex: 1;
+            font-size: 14px;
         }
 
         .btn-primary {
@@ -321,16 +414,17 @@
         }
 
         .admin-hint {
-            position: absolute;
+            position: fixed;
             bottom: 20px;
             right: 20px;
             background: rgba(0, 0, 0, 0.7);
             color: white;
             padding: 10px 15px;
             border-radius: 20px;
-            font-size: 14px;
+            font-size: 13px;
             opacity: 0;
             transition: opacity 0.3s;
+            z-index: 1001;
         }
 
         .admin-hint.show {
@@ -342,45 +436,45 @@
             color: white;
             padding: 4px 8px;
             border-radius: 12px;
-            font-size: 12px;
+            font-size: 11px;
         }
 
         .title-section {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         /* Admin Management Section */
         .admin-management {
-            margin-top: 25px;
+            margin-top: 20px;
             border-top: 2px solid #f0f0f0;
-            padding-top: 20px;
+            padding-top: 15px;
         }
 
         .admin-section-title {
             text-align: left;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             color: #2c3e50;
-            font-size: 18px;
+            font-size: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .product-list {
-            max-height: 200px;
+            max-height: 150px;
             overflow-y: auto;
             border: 1px solid #ddd;
             border-radius: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .product-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 15px;
+            padding: 8px 12px;
             border-bottom: 1px solid #f0f0f0;
         }
 
@@ -395,26 +489,35 @@
 
         .product-item-name {
             font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 4px;
+            font-size: 13px;
+            margin-bottom: 3px;
         }
 
         .product-item-price {
-            font-size: 12px;
+            font-size: 11px;
             color: #e74c3c;
+        }
+
+        .product-item-category {
+            font-size: 10px;
+            color: #7f8c8d;
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 8px;
+            display: inline-block;
         }
 
         .product-item-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .action-btn {
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 14px;
-            padding: 5px;
+            font-size: 13px;
+            padding: 4px;
             border-radius: 4px;
             transition: all 0.3s;
         }
@@ -438,8 +541,8 @@
         }
 
         .danger-zone {
-            margin-top: 20px;
-            padding: 15px;
+            margin-top: 15px;
+            padding: 12px;
             background: #fff5f5;
             border-radius: 8px;
             border: 1px solid #fed7d7;
@@ -447,44 +550,98 @@
 
         .danger-title {
             color: #e53e3e;
-            font-size: 16px;
-            margin-bottom: 10px;
+            font-size: 14px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
-        @media (max-width: 480px) {
+        .no-products {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 30px 20px;
+            color: #7f8c8d;
+        }
+
+        .no-products i {
+            font-size: 40px;
+            margin-bottom: 10px;
+            color: #bdc3c7;
+        }
+
+        .no-products p {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .no-products small {
+            font-size: 12px;
+            color: #95a5a6;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 380px) {
             .card {
-                padding: 20px;
+                padding: 20px 15px;
             }
             
             .profile-img {
-                width: 110px;
-                height: 110px;
+                width: 100px;
+                height: 100px;
             }
             
             .profile h1 {
-                font-size: 24px;
+                font-size: 22px;
             }
             
             .product-image {
-                height: 140px;
+                height: 120px;
             }
             
-            .section-title {
-                flex-direction: column;
-                gap: 10px;
-                align-items: flex-start;
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
             
-            .pagination {
-                gap: 10px;
+            .category-btn {
+                font-size: 11px;
+                padding: 8px 4px;
+                height: 36px;
+            }
+            
+            .product-name {
+                font-size: 12px;
+                height: 34px;
+            }
+            
+            .product-price {
+                font-size: 14px;
+            }
+            
+            .buy-button {
+                padding: 8px;
+                font-size: 12px;
             }
             
             .pagination-btn {
-                padding: 8px 15px;
-                font-size: 14px;
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+            
+            .page-info {
+                font-size: 12px;
+                min-width: 80px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -496,6 +653,22 @@
                 <img src="https://png.pngtree.com/png-clipart/20240814/original/pngtree-chibi-character-doing-shopping-png-image_15771045.png" alt="Profile Picture" class="profile-img">
                 <h1>Aisah-Shopp</h1>
                 <p>Selamat datang diToko kami, Kepuasan Anda adalah prioritas utama kami. Selamat berbelanja💕</p>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-box" placeholder="Cari produk...">
+                <div class="search-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            
+            <!-- Categories - FIXED LAYOUT -->
+            <div class="categories-container">
+                <div class="categories-title">Kategori:</div>
+                <div class="categories-grid" id="categoriesContainer">
+                    <!-- Kategori akan dimuat via JavaScript -->
+                </div>
             </div>
             
             <div class="section-title">
@@ -522,9 +695,21 @@
                 </button>
             </div>
             
+            <div class="social-links">
+                <a href="#" class="social-link">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+            </div>
+            
             <div class="footer">
                 <p>© 2023 Aisah-Shopp. All rights reserved.</p>
-                <p style="font-size: 12px; margin-top: 5px;"></p>
+                <p style="font-size: 11px; margin-top: 5px; color: #95a5a6;">Tekan Shift+A untuk akses admin</p>
             </div>
         </div>
     </div>
@@ -540,13 +725,24 @@
                     <input type="text" id="productName" placeholder="Contoh: Oroza Kaos Pria Lengan Pendek">
                 </div>
                 <div class="form-group">
+                    <label for="productCategory">Kategori Produk</label>
+                    <select id="productCategory">
+                        <option value="fashion">Fashion</option>
+                        <option value="elektronik">Elektronik</option>
+                        <option value="kecantikan">Kecantikan</option>
+                        <option value="rumah-tangga">Rumah Tangga</option>
+                        <option value="hobi">Hobi</option>
+                        <option value="lainnya">Lainnya</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="productPrice">Harga Produk</label>
                     <input type="text" id="productPrice" placeholder="Contoh: Rp116.609">
                 </div>
                 <div class="form-group">
                     <label for="productImage">URL Gambar Produk (Portrait)</label>
                     <input type="text" id="productImage" placeholder="Masukkan URL gambar portrait">
-                    <small style="color: #666; margin-top: 5px;">Gunakan gambar dengan rasio portrait (lebih tinggi daripada lebar)</small>
+                    <small style="color: #666; margin-top: 5px; font-size: 12px;">Gunakan gambar dengan rasio portrait (lebih tinggi daripada lebar)</small>
                 </div>
                 <div class="form-group">
                     <label for="productLink">Link Shopee</label>
@@ -592,26 +788,86 @@
         const STORAGE_INITIALIZED_KEY = 'linktree_initialized';
         const PRODUCTS_PER_PAGE = 4;
 
-        // Variabel pagination
+        // Kategori yang tersedia
+        const CATEGORIES = [
+            { id: 'all', name: 'Semua' },
+            { id: 'fashion', name: 'Fashion' },
+            { id: 'elektronik', name: 'Elektronik' },
+            { id: 'kecantikan', name: 'Kecantikan' },
+            { id: 'rumah-tangga', name: 'Rumah Tangga' },
+            { id: 'hobi', name: 'Hobi' },
+            { id: 'lainnya', name: 'Lainnya' }
+        ];
+
+        // Variabel global
         let currentPage = 1;
         let totalPages = 1;
+        let currentCategory = 'all';
+        let currentSearch = '';
 
         // Fungsi untuk mendapatkan produk dari localStorage
         function getProductsFromStorage() {
             const storedProducts = localStorage.getItem(STORAGE_KEY);
             const isInitialized = localStorage.getItem(STORAGE_INITIALIZED_KEY);
             
-            // Jika belum pernah diinisialisasi, kembalikan array kosong
             if (!isInitialized) {
                 localStorage.setItem(STORAGE_INITIALIZED_KEY, 'true');
-                return [];
+                return getDefaultProducts();
             }
             
             if (storedProducts) {
                 return JSON.parse(storedProducts);
             }
             
-            return [];
+            return getDefaultProducts();
+        }
+
+        // Data produk default dengan kategori
+        function getDefaultProducts() {
+            return [
+                {
+                    name: "Oroza Kaos Pria Lengan Pendek",
+                    price: "Rp116.609",
+                    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dHNoaXJ0fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
+                    link: "https://shope.ee/8A2FpNqXrX",
+                    category: "fashion"
+                },
+                {
+                    name: "Parfume Raudah MADINAH",
+                    price: "Rp204.250",
+                    image: "https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyZnVtZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+                    link: "https://shope.ee/7UjJpJ6vX2",
+                    category: "kecantikan"
+                },
+                {
+                    name: "CREDIFOX Jaket gurung",
+                    price: "Rp203.998",
+                    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8amFja2V0fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
+                    link: "https://shope.ee/4V6KJvR4Xp",
+                    category: "fashion"
+                },
+                {
+                    name: "Gamis TOYOBO Polos",
+                    price: "Rp98.999",
+                    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z2FtaXN8ZW58MHx8MHx8fDA%3D%3D&auto=format&fit=crop&w=500&q=60",
+                    link: "https://shope.ee/5fR5Y6vX2r",
+                    category: "fashion"
+                },
+                {
+                    name: "Smart Watch Pro Series",
+                    price: "Rp350.000",
+                    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+                    link: "https://shope.ee/9KQ123XrX",
+                    category: "elektronik"
+                },
+                {
+                    name: "Wireless Earbuds Premium",
+                    price: "Rp189.000",
+                    image: "https://images.unsplash.com/photo-1590658165737-15a047b8b5e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZWFyYnVkc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+                    link: "https://shope.ee/7UjJpJ6vX3",
+                    category: "elektronik"
+                }
+            ];
         }
 
         // Fungsi untuk menyimpan produk ke localStorage
@@ -623,11 +879,8 @@
         // Fungsi untuk clear cache dan reset
         function clearCacheAndReset() {
             if (confirm('Apakah Anda yakin ingin mereset semua data dan cache? Tindakan ini akan menghapus semua produk dan menyegarkan halaman.')) {
-                // Hapus semua data localStorage
                 localStorage.removeItem(STORAGE_KEY);
                 localStorage.removeItem(STORAGE_INITIALIZED_KEY);
-                
-                // Force reload tanpa cache
                 window.location.reload(true);
             }
         }
@@ -648,59 +901,102 @@
         const nextBtn = document.getElementById('nextBtn');
         const pageInfo = document.getElementById('pageInfo');
         const adminProductList = document.getElementById('adminProductList');
+        const searchInput = document.getElementById('searchInput');
+        const categoriesContainer = document.getElementById('categoriesContainer');
+
+        // Filter produk berdasarkan kategori dan pencarian
+        function getFilteredProducts() {
+            return products.filter(product => {
+                const matchesCategory = currentCategory === 'all' || product.category === currentCategory;
+                const matchesSearch = product.name.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                                    product.price.toLowerCase().includes(currentSearch.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+        }
+
+        // Render kategori - FIXED GRID LAYOUT
+        function renderCategories() {
+            categoriesContainer.innerHTML = '';
+            CATEGORIES.forEach(category => {
+                const categoryBtn = document.createElement('button');
+                categoryBtn.className = `category-btn ${currentCategory === category.id ? 'active' : ''}`;
+                categoryBtn.textContent = category.name;
+                categoryBtn.onclick = () => setCategory(category.id);
+                categoriesContainer.appendChild(categoryBtn);
+            });
+        }
+
+        // Set kategori aktif
+        function setCategory(categoryId) {
+            currentCategory = categoryId;
+            currentPage = 1;
+            renderCategories();
+            renderProducts();
+        }
+
+        // Setup event listener untuk search
+        function setupSearch() {
+            searchInput.addEventListener('input', (e) => {
+                currentSearch = e.target.value;
+                currentPage = 1;
+                renderProducts();
+            });
+        }
 
         // Fungsi untuk menghitung total halaman
         function calculateTotalPages() {
-            return Math.ceil(products.length / PRODUCTS_PER_PAGE);
+            const filteredProducts = getFilteredProducts();
+            return Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
         }
 
         // Fungsi untuk mendapatkan produk untuk halaman tertentu
         function getProductsForPage(page) {
+            const filteredProducts = getFilteredProducts();
             const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
             const endIndex = startIndex + PRODUCTS_PER_PAGE;
-            return products.slice(startIndex, endIndex);
+            return filteredProducts.slice(startIndex, endIndex);
         }
 
         // Fungsi untuk update pagination controls
         function updatePaginationControls() {
             totalPages = calculateTotalPages();
             
-            // Sembunyikan pagination jika hanya 1 halaman
             if (totalPages <= 1) {
                 pagination.style.display = 'none';
             } else {
                 pagination.style.display = 'flex';
             }
             
-            // Update status tombol
             prevBtn.disabled = currentPage === 1;
             nextBtn.disabled = currentPage === totalPages;
-            
-            // Update info halaman
             pageInfo.textContent = `Halaman ${currentPage} dari ${totalPages}`;
         }
 
         // Tampilkan produk untuk halaman saat ini
         function renderProducts() {
             productGrid.innerHTML = '';
+            const filteredProducts = getFilteredProducts();
+            const productsToShow = getProductsForPage(currentPage);
             
-            if (products.length === 0) {
+            if (filteredProducts.length === 0) {
                 productGrid.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #7f8c8d;">
-                        <i class="fas fa-box-open" style="font-size: 48px; margin-bottom: 15px;"></i>
-                        <p>Belum ada produk. Tambahkan produk.</p>
+                    <div class="no-products">
+                        <i class="fas fa-search"></i>
+                        <p>${currentSearch ? 'Produk tidak ditemukan' : 'Belum ada produk. Tambahkan produk.'}</p>
+                        ${currentSearch ? '<small>Coba kata kunci lain atau hapus pencarian</small>' : ''}
                     </div>
                 `;
             } else {
-                const productsToShow = getProductsForPage(currentPage);
-                
                 productsToShow.forEach((product, index) => {
                     const productCard = document.createElement('div');
                     productCard.className = 'product-card';
                     
+                    const categoryName = CATEGORIES.find(cat => cat.id === product.category)?.name || 'Lainnya';
+                    
                     productCard.innerHTML = `
                         <img src="${product.image}" alt="${product.name}" class="product-image">
                         <div class="product-info">
+                            <div class="product-category">${categoryName}</div>
                             <div class="product-name">${product.name}</div>
                             <div class="product-price">${product.price}</div>
                             <a href="${product.link}" class="buy-button" target="_blank">Beli Sekarang</a>
@@ -711,7 +1007,9 @@
             }
             
             // Update jumlah produk
-            productCount.textContent = `${products.length} produk`;
+            const filteredCount = getFilteredProducts().length;
+            const totalCount = products.length;
+            productCount.textContent = `${filteredCount} produk${currentSearch || currentCategory !== 'all' ? ` (dari ${totalCount} total)` : ''}`;
             
             // Update pagination
             updatePaginationControls();
@@ -736,10 +1034,13 @@
                     const productItem = document.createElement('div');
                     productItem.className = 'product-item';
                     
+                    const categoryName = CATEGORIES.find(cat => cat.id === product.category)?.name || 'Lainnya';
+                    
                     productItem.innerHTML = `
                         <div class="product-item-info">
                             <div class="product-item-name">${product.name}</div>
                             <div class="product-item-price">${product.price}</div>
+                            <div class="product-item-category">${categoryName}</div>
                         </div>
                         <div class="product-item-actions">
                             <button class="action-btn edit-btn" onclick="editProduct(${index})" title="Edit Produk">
@@ -775,8 +1076,12 @@
             if (confirm('Apakah Anda yakin ingin menghapus semua produk? Tindakan ini tidak dapat dibatalkan!')) {
                 products = [];
                 currentPage = 1;
+                currentCategory = 'all';
+                currentSearch = '';
+                searchInput.value = '';
                 saveProductsToStorage(products);
                 renderProducts();
+                renderCategories();
                 showHint('Semua produk berhasil dihapus');
             }
         }
@@ -789,7 +1094,6 @@
                 renderProducts();
                 showHint('Produk berhasil dihapus');
                 
-                // Jika halaman saat ini kosong setelah penghapusan, kembali ke halaman sebelumnya
                 if (getProductsForPage(currentPage).length === 0 && currentPage > 1) {
                     currentPage--;
                     renderProducts();
@@ -804,9 +1108,9 @@
             document.getElementById('productPrice').value = product.price;
             document.getElementById('productImage').value = product.image;
             document.getElementById('productLink').value = product.link;
+            document.getElementById('productCategory').value = product.category;
             editIndexInput.value = index;
             
-            // Scroll ke form input
             document.querySelector('.admin-form').scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -815,11 +1119,11 @@
             if (adminPanel.style.display === 'flex') {
                 adminPanel.style.display = 'none';
                 showHint('Panel Admin Ditutup');
-                // Reset form saat menutup panel
                 document.getElementById('productName').value = '';
                 document.getElementById('productPrice').value = '';
                 document.getElementById('productImage').value = '';
                 document.getElementById('productLink').value = '';
+                document.getElementById('productCategory').value = 'fashion';
                 editIndexInput.value = '';
             } else {
                 adminPanel.style.display = 'flex';
@@ -842,6 +1146,7 @@
             const price = document.getElementById('productPrice').value;
             const image = document.getElementById('productImage').value;
             const link = document.getElementById('productLink').value;
+            const category = document.getElementById('productCategory').value;
             const editIndex = editIndexInput.value;
 
             if (!name || !price || !image || !link) {
@@ -849,34 +1154,30 @@
                 return;
             }
 
-            const product = { name, price, image, link };
+            const product = { name, price, image, link, category };
 
             if (editIndex === '') {
-                // Tambah produk baru
                 products.push(product);
                 showHint('Produk berhasil ditambahkan!');
-                
-                // Jika produk baru ditambah di halaman terakhir, pindah ke halaman terakhir
                 totalPages = calculateTotalPages();
                 if (currentPage !== totalPages) {
                     currentPage = totalPages;
                 }
             } else {
-                // Edit produk yang ada
                 products[editIndex] = product;
                 showHint('Produk berhasil diupdate!');
                 editIndexInput.value = '';
             }
 
-            // Simpan ke localStorage
             saveProductsToStorage(products);
             renderProducts();
+            renderCategories();
             
-            // Reset form
             document.getElementById('productName').value = '';
             document.getElementById('productPrice').value = '';
             document.getElementById('productImage').value = '';
             document.getElementById('productLink').value = '';
+            document.getElementById('productCategory').value = 'fashion';
         }
 
         // Event listener untuk shortcut keyboard
@@ -891,6 +1192,8 @@
         closeAdminBtn.addEventListener('click', toggleAdminPanel);
 
         // Inisialisasi
+        renderCategories();
+        setupSearch();
         renderProducts();
     </script>
 </body>
