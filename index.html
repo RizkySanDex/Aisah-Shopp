@@ -65,7 +65,6 @@
             margin-bottom: 5px;
         }
 
-        /* Search Bar */
         .search-container {
             margin: 20px 0;
             position: relative;
@@ -87,15 +86,6 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .search-icon {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #a0aec0;
-        }
-
-        /* Categories */
         .categories-container {
             margin: 20px 0;
         }
@@ -146,7 +136,6 @@
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
 
-        /* Products Section */
         .products-section {
             margin: 25px 0;
         }
@@ -252,7 +241,6 @@
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
 
-        /* Pagination */
         .pagination {
             display: flex;
             justify-content: center;
@@ -296,7 +284,6 @@
             text-align: center;
         }
 
-        /* Social Links */
         .social-links {
             display: flex;
             justify-content: center;
@@ -326,7 +313,6 @@
             box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             color: #718096;
@@ -361,7 +347,6 @@
             box-shadow: 0 8px 20px rgba(237, 100, 166, 0.3);
         }
 
-        /* Admin Panel */
         .admin-panel {
             display: none;
             background: rgba(0, 0, 0, 0.8);
@@ -485,7 +470,6 @@
             opacity: 1;
         }
 
-        /* No Products State */
         .no-products {
             grid-column: 1 / -1;
             text-align: center;
@@ -504,7 +488,6 @@
             margin-bottom: 8px;
         }
 
-        /* Mobile Responsive */
         @media (max-width: 480px) {
             .container {
                 max-width: 100%;
@@ -528,22 +511,11 @@
                 height: 150px;
             }
         }
-
-        @media (max-width: 320px) {
-            .main-card {
-                padding: 20px 15px;
-            }
-            
-            .categories-grid {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="main-card">
-            <!-- Profile Section -->
             <div class="profile-section">
                 <img src="https://png.pngtree.com/png-clipart/20240814/original/pngtree-chibi-character-doing-shopping-png-image_15771045.png" alt="Profile Picture" class="profile-img">
                 <h1 class="profile-name">Aisah-Shopp</h1>
@@ -551,62 +523,43 @@
                 <p class="profile-bio" style="color: #667eea; font-weight: 600;">Selamat berbelanja 💕</p>
             </div>
             
-            <!-- Search Bar -->
             <div class="search-container">
                 <input type="text" id="searchInput" class="search-box" placeholder="🔍 Cari produk...">
             </div>
             
-            <!-- Categories -->
             <div class="categories-container">
                 <div class="categories-title">Kategori Produk</div>
-                <div class="categories-grid" id="categoriesContainer">
-                    <!-- Kategori akan dimuat via JavaScript -->
-                </div>
+                <div class="categories-grid" id="categoriesContainer"></div>
             </div>
 
-            <!-- Products Section -->
             <div class="products-section">
                 <div class="section-header">
                     <h2 class="section-title">Koleksi Produk</h2>
                     <span class="product-count" id="productCount">0 produk</span>
                 </div>
                 
-                <div class="product-grid" id="productGrid">
-                    <!-- Produk akan dimuat di sini melalui JavaScript -->
-                </div>
+                <div class="product-grid" id="productGrid"></div>
 
-                <!-- Pagination -->
                 <div class="pagination" id="pagination" style="display: none;">
-                    <button class="pagination-btn" id="prevBtn" onclick="changePage(-1)">
-                        <i class="fas fa-chevron-left"></i>
-                        Prev
+                    <button class="pagination-btn" id="prevBtn">
+                        <i class="fas fa-chevron-left"></i> Prev
                     </button>
                     <div class="page-info" id="pageInfo">Halaman 1 dari 1</div>
-                    <button class="pagination-btn" id="nextBtn" onclick="changePage(1)">
-                        Next
-                        <i class="fas fa-chevron-right"></i>
+                    <button class="pagination-btn" id="nextBtn">
+                        Next <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
             </div>
             
-            <!-- Social Links -->
             <div class="social-links">
-                <a href="#" class="social-link">
-                    <i class="fab fa-whatsapp"></i>
-                </a>
-                <a href="#" class="social-link">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="#" class="social-link">
-                    <i class="fab fa-tiktok"></i>
-                </a>
+                <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
             </div>
             
-            <!-- Footer -->
             <div class="footer">
-                <button class="share-btn" onclick="generateShareLink()">
-                    <i class="fas fa-share-alt"></i>
-                    Share Produk
+                <button class="share-btn" id="shareBtn">
+                    <i class="fas fa-share-alt"></i> Share Produk
                 </button>
                 <p>© 2024 Aisah-Shopp. All rights reserved.</p>
                 <p style="margin-top: 10px; font-size: 11px; color: #a0aec0;">
@@ -616,7 +569,6 @@
         </div>
     </div>
 
-    <!-- Admin Panel -->
     <div class="admin-panel" id="adminPanel">
         <div class="admin-content">
             <h2 class="admin-title">Panel Admin</h2>
@@ -657,14 +609,12 @@
         </div>
     </div>
 
-    <div class="admin-hint" id="adminHint">Panel Admin Ditutup</div>
+    <div class="admin-hint" id="adminHint"></div>
 
     <script>
-        // Key untuk localStorage
+        // ===== KONFIGURASI =====
         const STORAGE_KEY = 'aisah_shopp_data';
         const PRODUCTS_PER_PAGE = 4;
-
-        // Kategori yang tersedia
         const CATEGORIES = [
             { id: 'all', name: 'Semua' },
             { id: 'fashion', name: 'Fashion' },
@@ -675,143 +625,35 @@
             { id: 'lainnya', name: 'Lainnya' }
         ];
 
-        // Variabel global
+        // ===== VARIABEL GLOBAL =====
+        let products = [];
         let currentPage = 1;
         let totalPages = 1;
         let currentCategory = 'all';
         let currentSearch = '';
 
-        // === SHARE SYSTEM DENGAN KOMPRESI ===
-        function generateShareLink() {
-            if (products.length === 0) {
-                showHint('Tidak ada produk untuk dibagikan!');
-                return;
-            }
+        // ===== FUNGSI UTAMA =====
+        function initializeApp() {
+            loadProducts();
+            setupEventListeners();
+            checkUrlForSharedData();
+            renderCategories();
+            renderProducts();
+        }
 
+        function loadProducts() {
             try {
-                // Kompres data menggunakan LZ-String
-                const dataString = JSON.stringify(products);
-                const compressedData = LZString.compressToEncodedURIComponent(dataString);
-                
-                const baseUrl = window.location.origin + window.location.pathname;
-                const shareLink = `${baseUrl}?p=${compressedData}`;
-                
-                console.log('Original data length:', dataString.length);
-                console.log('Compressed data length:', compressedData.length);
-                console.log('Compression ratio:', (compressedData.length / dataString.length * 100).toFixed(2) + '%');
-                
-                if (navigator.clipboard) {
-                    navigator.clipboard.writeText(shareLink).then(() => {
-                        showHint('✅ Link berhasil disalin! Link sekarang lebih pendek.');
-                    }).catch(() => {
-                        fallbackCopy(shareLink);
-                    });
-                } else {
-                    fallbackCopy(shareLink);
-                }
-            } catch (error) {
-                console.error('Error generating share link:', error);
-                // Fallback ke method tanpa kompresi
-                generateShareLinkWithoutCompression();
-            }
-        }
-
-        function generateShareLinkWithoutCompression() {
-            try {
-                const dataString = JSON.stringify(products);
-                const encodedData = encodeURIComponent(dataString);
-                
-                const baseUrl = window.location.origin + window.location.pathname;
-                const shareLink = `${baseUrl}?data=${encodedData}`;
-                
-                if (navigator.clipboard) {
-                    navigator.clipboard.writeText(shareLink).then(() => {
-                        showHint('✅ Link berhasil disalin! (Tanpa kompresi)');
-                    }).catch(() => {
-                        fallbackCopy(shareLink);
-                    });
-                } else {
-                    fallbackCopy(shareLink);
-                }
-            } catch (error) {
-                console.error('Error generating fallback share link:', error);
-                showHint('❌ Error membuat link share');
-            }
-        }
-
-        function fallbackCopy(shareLink) {
-            const tempInput = document.createElement('input');
-            tempInput.value = shareLink;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            showHint('✅ Link berhasil disalin!');
-        }
-
-        function loadFromUrl() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const compressedData = urlParams.get('p');
-            const fallbackData = urlParams.get('data');
-            
-            // Coba load data terkompresi dulu
-            if (compressedData) {
-                try {
-                    const decompressedData = LZString.decompressFromEncodedURIComponent(compressedData);
-                    if (decompressedData) {
-                        const urlProducts = JSON.parse(decompressedData);
-                        processUrlProducts(urlProducts, 'kompresi');
-                        return;
-                    }
-                } catch (error) {
-                    console.error('Error decompressing data:', error);
-                }
-            }
-            
-            // Fallback ke data tanpa kompresi
-            if (fallbackData) {
-                try {
-                    const decodedData = decodeURIComponent(fallbackData);
-                    const urlProducts = JSON.parse(decodedData);
-                    processUrlProducts(urlProducts, 'fallback');
-                } catch (error) {
-                    console.error('Error loading fallback data:', error);
-                    showHint('❌ Error memuat data dari link');
-                }
-            }
-        }
-
-        function processUrlProducts(urlProducts, method) {
-            if (Array.isArray(urlProducts) && urlProducts.length > 0) {
-                // Cek apakah data berbeda dengan yang sekarang
-                const currentData = JSON.stringify(products);
-                const newData = JSON.stringify(urlProducts);
-                
-                                        // Hapus parameter dari URL tanpa reload
-                        const newUrl = window.location.origin + window.location.pathname;
-                        window.history.replaceState({}, document.title, newUrl);
-                    }
-                }
-            }
-        }
-
-        // Fungsi untuk mendapatkan produk dari localStorage
-        function getProductsFromStorage() {
-            try {
-                const storedProducts = localStorage.getItem(STORAGE_KEY);
-                if (storedProducts) {
-                    return JSON.parse(storedProducts);
-                }
+                const stored = localStorage.getItem(STORAGE_KEY);
+                products = stored ? JSON.parse(stored) : [];
             } catch (e) {
+                products = [];
                 console.error('Error loading products:', e);
             }
-            return [];
         }
 
-        // Fungsi untuk menyimpan produk ke localStorage
-        function saveProductsToStorage(productsToSave) {
+        function saveProducts() {
             try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(productsToSave));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
                 return true;
             } catch (e) {
                 console.error('Error saving products:', e);
@@ -819,90 +661,148 @@
             }
         }
 
-        // Fungsi untuk menyimpan produk 
-        async function saveProducts(productsToSave) {
-            products = productsToSave;
-            saveProductsToStorage(products);
+        // ===== SHARE SYSTEM =====
+        function generateShareLink() {
+            if (products.length === 0) {
+                showHint('Tidak ada produk untuk dibagikan!');
+                return;
+            }
+
+            try {
+                const dataString = JSON.stringify(products);
+                const compressedData = LZString.compressToEncodedURIComponent(dataString);
+                const baseUrl = window.location.origin + window.location.pathname;
+                const shareLink = `${baseUrl}?share=${compressedData}`;
+                
+                copyToClipboard(shareLink);
+                showHint('✅ Link berhasil disalin!');
+            } catch (error) {
+                console.error('Share error:', error);
+                showHint('❌ Gagal membuat link share');
+            }
         }
 
-        // Data produk dari localStorage
-        let products = getProductsFromStorage();
-
-        // Elemen DOM
-        const adminPanel = document.getElementById('adminPanel');
-        const productGrid = document.getElementById('productGrid');
-        const adminHint = document.getElementById('adminHint');
-        const saveProductBtn = document.getElementById('saveProduct');
-        const closeAdminBtn = document.getElementById('closeAdmin');
-        const editIndexInput = document.getElementById('editIndex');
-        const productCount = document.getElementById('productCount');
-        const pagination = document.getElementById('pagination');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const pageInfo = document.getElementById('pageInfo');
-        const searchInput = document.getElementById('searchInput');
-        const categoriesContainer = document.getElementById('categoriesContainer');
-
-        // Filter produk berdasarkan kategori dan pencarian
-        function getFilteredProducts() {
-            return products.filter(product => {
-                const matchesCategory = currentCategory === 'all' || product.category === currentCategory;
-                const matchesSearch = product.name.toLowerCase().includes(currentSearch.toLowerCase()) ||
-                                    product.price.toLowerCase().includes(currentSearch.toLowerCase());
-                return matchesCategory && matchesSearch;
-            });
+        function checkUrlForSharedData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const shareData = urlParams.get('share');
+            
+            if (shareData) {
+                try {
+                    const decompressed = LZString.decompressFromEncodedURIComponent(shareData);
+                    if (decompressed) {
+                        const sharedProducts = JSON.parse(decompressed);
+                        if (Array.isArray(sharedProducts) && sharedProducts.length > 0) {
+                            // OTOMATIS LOAD TANPA KONFIRMASI
+                            products = sharedProducts;
+                            saveProducts();
+                            renderProducts();
+                            renderCategories();
+                            showHint(`✅ ${sharedProducts.length} produk dimuat dari link!`);
+                            
+                            // Bersihkan URL
+                            cleanUrl();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading shared data:', error);
+                }
+            }
         }
 
-        // Render kategori
+        function cleanUrl() {
+            try {
+                const cleanUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+            } catch (e) {
+                console.log('Cannot clean URL');
+            }
+        }
+
+        function copyToClipboard(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text);
+            } else {
+                // Fallback untuk browser lama
+                const input = document.createElement('input');
+                input.value = text;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+            }
+        }
+
+        // ===== RENDER FUNCTIONS =====
         function renderCategories() {
-            if (!categoriesContainer) return;
-            categoriesContainer.innerHTML = '';
+            const container = document.getElementById('categoriesContainer');
+            if (!container) return;
+            
+            container.innerHTML = '';
             CATEGORIES.forEach(category => {
-                const categoryBtn = document.createElement('button');
-                categoryBtn.className = `category-btn ${currentCategory === category.id ? 'active' : ''}`;
-                categoryBtn.textContent = category.name;
-                categoryBtn.onclick = () => setCategory(category.id);
-                categoriesContainer.appendChild(categoryBtn);
+                const btn = document.createElement('button');
+                btn.className = `category-btn ${currentCategory === category.id ? 'active' : ''}`;
+                btn.textContent = category.name;
+                btn.onclick = () => setCategory(category.id);
+                container.appendChild(btn);
             });
         }
 
-        // Set kategori aktif
-        function setCategory(categoryId) {
-            currentCategory = categoryId;
-            currentPage = 1;
-            renderCategories();
-            renderProducts();
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const count = document.getElementById('productCount');
+            if (!grid || !count) return;
+            
+            const filtered = getFilteredProducts();
+            const productsToShow = getProductsForPage(currentPage);
+            
+            grid.innerHTML = '';
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-products">
+                        <i class="fas fa-box-open"></i>
+                        <p>${products.length === 0 ? 'Belum ada produk' : 'Tidak ada produk yang cocok'}</p>
+                        <p style="font-size: 13px; color: #95a5a6; margin-top: 10px;">
+                            Tekan <kbd>Shift</kbd> + <kbd>A</kbd> untuk menambah produk pertama
+                        </p>
+                    </div>
+                `;
+            } else {
+                productsToShow.forEach(product => {
+                    const categoryName = CATEGORIES.find(cat => cat.id === product.category)?.name || 'Lainnya';
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}" class="product-image" 
+                             onerror="this.src='https://via.placeholder.com/300x400/ffffff/666666?text=Gambar+Tidak+Ada'">
+                        <div class="product-info">
+                            <div class="product-category">${categoryName}</div>
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-price">${product.price}</div>
+                            <a href="${product.link}" class="buy-button" target="_blank">Beli Sekarang</a>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+            
+            // Update counter
+            const totalCount = products.length;
+            const filteredCount = filtered.length;
+            count.textContent = `${filteredCount} produk${currentSearch || currentCategory !== 'all' ? ` (dari ${totalCount} total)` : ''}`;
+            
+            updatePagination();
         }
 
-        // Setup event listener untuk search
-        function setupSearch() {
-            if (!searchInput) return;
-            searchInput.addEventListener('input', (e) => {
-                currentSearch = e.target.value;
-                currentPage = 1;
-                renderProducts();
-            });
-        }
-
-        // Fungsi untuk menghitung total halaman
-        function calculateTotalPages() {
-            const filteredProducts = getFilteredProducts();
-            return Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
-        }
-
-        // Fungsi untuk mendapatkan produk untuk halaman tertentu
-        function getProductsForPage(page) {
-            const filteredProducts = getFilteredProducts();
-            const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
-            const endIndex = startIndex + PRODUCTS_PER_PAGE;
-            return filteredProducts.slice(startIndex, endIndex);
-        }
-
-        // Fungsi untuk update pagination controls
-        function updatePaginationControls() {
+        function updatePagination() {
+            const pagination = document.getElementById('pagination');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const pageInfo = document.getElementById('pageInfo');
+            
             if (!pagination || !prevBtn || !nextBtn || !pageInfo) return;
             
-            totalPages = calculateTotalPages();
+            totalPages = Math.ceil(getFilteredProducts().length / PRODUCTS_PER_PAGE);
             
             if (totalPages <= 1) {
                 pagination.style.display = 'none';
@@ -915,95 +815,70 @@
             pageInfo.textContent = `Halaman ${currentPage} dari ${totalPages}`;
         }
 
-        // Tampilkan produk untuk halaman saat ini
-        function renderProducts() {
-            if (!productGrid || !productCount) return;
-            
-            productGrid.innerHTML = '';
-            const filteredProducts = getFilteredProducts();
-            const productsToShow = getProductsForPage(currentPage);
-            
-            if (filteredProducts.length === 0) {
-                productGrid.innerHTML = `
-                    <div class="no-products">
-                        <i class="fas fa-box-open"></i>
-                        <p>${products.length === 0 ? 'Belum ada produk' : 'Tidak ada produk yang cocok'}</p>
-                        <p style="font-size: 13px; color: #95a5a6; margin-top: 10px;">Tekan <kbd>Shift</kbd> + <kbd>A</kbd> untuk menambah produk pertama</p>
-                    </div>
-                `;
-            } else {
-                productsToShow.forEach((product, index) => {
-                    const productCard = document.createElement('div');
-                    productCard.className = 'product-card';
-                    
-                    const categoryName = CATEGORIES.find(cat => cat.id === product.category)?.name || 'Lainnya';
-                    
-                    productCard.innerHTML = `
-                        <img src="${product.image}" alt="${product.name}" class="product-image" onerror="this.src='https://via.placeholder.com/300x400/ffffff/666666?text=Gambar+Tidak+Ada'">
-                        <div class="product-info">
-                            <div class="product-category">${categoryName}</div>
-                            <div class="product-name">${product.name}</div>
-                            <div class="product-price">${product.price}</div>
-                            <a href="${product.link}" class="buy-button" target="_blank">Beli Sekarang</a>
-                        </div>
-                    `;
-                    productGrid.appendChild(productCard);
-                });
-            }
-            
-            // Update jumlah produk
-            const filteredCount = getFilteredProducts().length;
-            const totalCount = products.length;
-            productCount.textContent = `${filteredCount} produk${currentSearch || currentCategory !== 'all' ? ` (dari ${totalCount} total)` : ''}`;
-            
-            // Update pagination
-            updatePaginationControls();
+        // ===== HELPER FUNCTIONS =====
+        function getFilteredProducts() {
+            return products.filter(product => {
+                const matchesCategory = currentCategory === 'all' || product.category === currentCategory;
+                const matchesSearch = product.name.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                                    product.price.toLowerCase().includes(currentSearch.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
         }
 
-        // Fungsi untuk ganti halaman
+        function getProductsForPage(page) {
+            const filtered = getFilteredProducts();
+            const start = (page - 1) * PRODUCTS_PER_PAGE;
+            const end = start + PRODUCTS_PER_PAGE;
+            return filtered.slice(start, end);
+        }
+
+        function setCategory(categoryId) {
+            currentCategory = categoryId;
+            currentPage = 1;
+            renderCategories();
+            renderProducts();
+        }
+
         function changePage(direction) {
             const newPage = currentPage + direction;
-            
             if (newPage >= 1 && newPage <= totalPages) {
                 currentPage = newPage;
                 renderProducts();
             }
         }
 
-        // Fungsi untuk menampilkan/menyembunyikan panel admin
-        function toggleAdminPanel() {
-            if (adminPanel.style.display === 'flex') {
-                adminPanel.style.display = 'none';
-                showHint('Panel Admin Ditutup');
-                document.getElementById('productName').value = '';
-                document.getElementById('productPrice').value = '';
-                document.getElementById('productImage').value = '';
-                document.getElementById('productLink').value = '';
-                document.getElementById('productCategory').value = 'fashion';
-                editIndexInput.value = '';
-            } else {
-                adminPanel.style.display = 'flex';
-            }
-        }
-
-        // Fungsi untuk menampilkan pesan hint
         function showHint(message) {
-            if (!adminHint) return;
-            adminHint.textContent = message;
-            adminHint.classList.add('show');
+            const hint = document.getElementById('adminHint');
+            if (!hint) return;
+            
+            hint.textContent = message;
+            hint.classList.add('show');
             setTimeout(() => {
-                adminHint.classList.remove('show');
+                hint.classList.remove('show');
             }, 3000);
         }
 
-        // Fungsi untuk menambah/mengedit produk
-        async function saveProduct() {
-            const name = document.getElementById('productName').value;
-            const price = document.getElementById('productPrice').value;
-            const image = document.getElementById('productImage').value;
-            const link = document.getElementById('productLink').value;
+        // ===== ADMIN FUNCTIONS =====
+        function toggleAdminPanel() {
+            const panel = document.getElementById('adminPanel');
+            if (!panel) return;
+            
+            if (panel.style.display === 'flex') {
+                panel.style.display = 'none';
+                showHint('Panel Admin Ditutup');
+                resetForm();
+            } else {
+                panel.style.display = 'flex';
+            }
+        }
+
+        function saveProduct() {
+            const name = document.getElementById('productName').value.trim();
+            const price = document.getElementById('productPrice').value.trim();
+            const image = document.getElementById('productImage').value.trim();
+            const link = document.getElementById('productLink').value.trim();
             const category = document.getElementById('productCategory').value;
-            const editIndex = editIndexInput.value;
+            const editIndex = document.getElementById('editIndex').value;
 
             if (!name || !price || !image || !link) {
                 alert('Harap isi semua field!');
@@ -1015,21 +890,26 @@
             if (editIndex === '') {
                 products.push(product);
                 showHint('✅ Produk berhasil ditambahkan!');
-                
-                totalPages = calculateTotalPages();
-                if (currentPage !== totalPages) {
-                    currentPage = totalPages;
-                }
             } else {
                 products[editIndex] = product;
                 showHint('✅ Produk berhasil diupdate!');
-                editIndexInput.value = '';
+                document.getElementById('editIndex').value = '';
             }
 
-            await saveProducts(products);
+            saveProducts();
             renderProducts();
             renderCategories();
+            resetForm();
             
+            // Auto scroll ke halaman terakhir jika tambah produk baru
+            if (editIndex === '') {
+                totalPages = Math.ceil(getFilteredProducts().length / PRODUCTS_PER_PAGE);
+                currentPage = totalPages;
+                renderProducts();
+            }
+        }
+
+        function resetForm() {
             document.getElementById('productName').value = '';
             document.getElementById('productPrice').value = '';
             document.getElementById('productImage').value = '';
@@ -1037,34 +917,45 @@
             document.getElementById('productCategory').value = 'fashion';
         }
 
-        // Event listener untuk shortcut keyboard
-        document.addEventListener('keydown', (e) => {
-            if (e.shiftKey && e.key === 'A') {
-                e.preventDefault();
-                toggleAdminPanel();
+        // ===== EVENT LISTENERS =====
+        function setupEventListeners() {
+            // Search
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    currentSearch = e.target.value;
+                    currentPage = 1;
+                    renderProducts();
+                });
             }
-        });
 
-        // Event listener untuk tombol
-        if (saveProductBtn) saveProductBtn.addEventListener('click', saveProduct);
-        if (closeAdminBtn) closeAdminBtn.addEventListener('click', toggleAdminPanel);
+            // Pagination
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            if (prevBtn) prevBtn.onclick = () => changePage(-1);
+            if (nextBtn) nextBtn.onclick = () => changePage(1);
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            // Tunggu sebentar sebelum load dari URL untuk menghindari konflik
-            setTimeout(() => {
-                loadFromUrl();
-            }, 100);
-            
-            renderCategories();
-            setupSearch();
-            renderProducts();
-        });
+            // Share button
+            const shareBtn = document.getElementById('shareBtn');
+            if (shareBtn) shareBtn.onclick = generateShareLink;
 
-        // Expose functions ke global scope
-        window.changePage = changePage;
-        window.toggleAdminPanel = toggleAdminPanel;
-        window.generateShareLink = generateShareLink;
+            // Admin buttons
+            const saveBtn = document.getElementById('saveProduct');
+            const closeBtn = document.getElementById('closeAdmin');
+            if (saveBtn) saveBtn.onclick = saveProduct;
+            if (closeBtn) closeBtn.onclick = toggleAdminPanel;
+
+            // Keyboard shortcut
+            document.addEventListener('keydown', (e) => {
+                if (e.shiftKey && e.key === 'A') {
+                    e.preventDefault();
+                    toggleAdminPanel();
+                }
+            });
+        }
+
+        // ===== INITIALIZE APP =====
+        document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
 </body>
 </html>
