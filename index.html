@@ -524,7 +524,7 @@
             
             <div class="footer">
                 <p>© 2023 Aisah-Shopp. All rights reserved.</p>
-                <p style="font-size: 12px; margin-top: 5px;"></p>
+                <p style="font-size: 12px; margin-top: 5px;">Tekan Shift+A untuk akses admin</p>
             </div>
         </div>
     </div>
@@ -576,6 +576,9 @@
                     <button class="btn btn-secondary" onclick="deleteAllProducts()" style="width: 100%;">
                         <i class="fas fa-trash"></i> Hapus Semua Produk
                     </button>
+                    <button class="btn btn-secondary" onclick="clearCacheAndReset()" style="width: 100%; margin-top: 10px; background: #d35400;">
+                        <i class="fas fa-sync-alt"></i> Reset & Clear Cache
+                    </button>
                 </div>
             </div>
         </div>
@@ -586,7 +589,8 @@
     <script>
         // Key untuk localStorage
         const STORAGE_KEY = 'linktree_products';
-        const PRODUCTS_PER_PAGE = 4; // 2 baris x 2 kolom = 4 produk per halaman
+        const STORAGE_INITIALIZED_KEY = 'linktree_initialized';
+        const PRODUCTS_PER_PAGE = 4;
 
         // Variabel pagination
         let currentPage = 1;
@@ -595,53 +599,37 @@
         // Fungsi untuk mendapatkan produk dari localStorage
         function getProductsFromStorage() {
             const storedProducts = localStorage.getItem(STORAGE_KEY);
+            const isInitialized = localStorage.getItem(STORAGE_INITIALIZED_KEY);
+            
+            // Jika belum pernah diinisialisasi, kembalikan array kosong
+            if (!isInitialized) {
+                localStorage.setItem(STORAGE_INITIALIZED_KEY, 'true');
+                return [];
+            }
+            
             if (storedProducts) {
                 return JSON.parse(storedProducts);
             }
-            // Data default jika tidak ada di localStorage
-            return [
-                {
-                    name: "Oroza Kaos Pria Lengan Pendek",
-                    price: "Rp116.609",
-                    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dHNoaXJ0fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
-                    link: "https://shope.ee/8A2FpNqXrX"
-                },
-                {
-                    name: "Parfume Raudah MADINAH",
-                    price: "Rp204.250",
-                    image: "https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyZnVtZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                    link: "https://shope.ee/7UjJpJ6vX2"
-                },
-                {
-                    name: "CREDIFOX Jaket gurung",
-                    price: "Rp203.998",
-                    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8amFja2V0fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
-                    link: "https://shope.ee/4V6KJvR4Xp"
-                },
-                {
-                    name: "Gamis TOYOBO Polos",
-                    price: "Rp98.999",
-                    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z2FtaXN8ZW58MHx8MHx8fDA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                    link: "https://shope.ee/5fR5Y6vX2r"
-                },
-                {
-                    name: "Smart Watch Pro Series",
-                    price: "Rp350.000",
-                    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                    link: "https://shope.ee/9KQ123XrX"
-                },
-                {
-                    name: "Wireless Earbuds Premium",
-                    price: "Rp189.000",
-                    image: "https://images.unsplash.com/photo-1590658165737-15a047b8b5e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZWFyYnVkc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                    link: "https://shope.ee/7UjJpJ6vX3"
-                }
-            ];
+            
+            return [];
         }
 
         // Fungsi untuk menyimpan produk ke localStorage
         function saveProductsToStorage(products) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+            localStorage.setItem(STORAGE_INITIALIZED_KEY, 'true');
+        }
+
+        // Fungsi untuk clear cache dan reset
+        function clearCacheAndReset() {
+            if (confirm('Apakah Anda yakin ingin mereset semua data dan cache? Tindakan ini akan menghapus semua produk dan menyegarkan halaman.')) {
+                // Hapus semua data localStorage
+                localStorage.removeItem(STORAGE_KEY);
+                localStorage.removeItem(STORAGE_INITIALIZED_KEY);
+                
+                // Force reload tanpa cache
+                window.location.reload(true);
+            }
         }
 
         // Data produk dari localStorage
@@ -700,7 +688,7 @@
                 productGrid.innerHTML = `
                     <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #7f8c8d;">
                         <i class="fas fa-box-open" style="font-size: 48px; margin-bottom: 15px;"></i>
-                        <p>Belum ada produk. Tekan Shift+A untuk menambah produk.</p>
+                        <p>Belum ada produk. Tambahkan produk.</p>
                     </div>
                 `;
             } else {
@@ -786,7 +774,7 @@
             
             if (confirm('Apakah Anda yakin ingin menghapus semua produk? Tindakan ini tidak dapat dibatalkan!')) {
                 products = [];
-                currentPage = 1; // Reset ke halaman 1
+                currentPage = 1;
                 saveProductsToStorage(products);
                 renderProducts();
                 showHint('Semua produk berhasil dihapus');
