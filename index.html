@@ -93,7 +93,7 @@
             color: #7f8c8d;
         }
 
-        /* Category Styles - FIXED */
+        /* Category Styles */
         .categories-container {
             margin: 15px 0 20px 0;
         }
@@ -560,24 +560,29 @@
         .no-products {
             grid-column: 1 / -1;
             text-align: center;
-            padding: 30px 20px;
+            padding: 40px 20px;
             color: #7f8c8d;
         }
 
         .no-products i {
-            font-size: 40px;
-            margin-bottom: 10px;
+            font-size: 48px;
+            margin-bottom: 15px;
             color: #bdc3c7;
         }
 
         .no-products p {
             font-size: 14px;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
 
-        .no-products small {
+        .no-products .admin-hint {
+            background: #6a11cb;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
             font-size: 12px;
-            color: #95a5a6;
+            display: inline-block;
+            margin-top: 10px;
         }
 
         /* Mobile Optimizations */
@@ -646,22 +651,6 @@
         }
     </style>
 </head>
-<!-- Cache Busting Script -->
-<script>
-    // Force clear cache on load
-    if (window.location.search.indexOf('refresh') === -1 && window.location.search.indexOf('v=') === -1) {
-        window.location.href = window.location.href + (window.location.search ? '&' : '?') + 'v=' + new Date().getTime();
-    }
-    
-    // Clear old localStorage versions
-    const currentVersion = '1.2.0';
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && key.startsWith('linktree_products') && !key.includes(currentVersion)) {
-            localStorage.removeItem(key);
-        }
-    }
-</script>
 <body>
     <div class="container">
         <div class="card">
@@ -679,7 +668,7 @@
                 </div>
             </div>
             
-            <!-- Categories - FIXED LAYOUT -->
+            <!-- Categories -->
             <div class="categories-container">
                 <div class="categories-title">Kategori:</div>
                 <div class="categories-grid" id="categoriesContainer">
@@ -725,7 +714,7 @@
             
             <div class="footer">
                 <p>© 2023 Aisah-Shopp. All rights reserved.</p>
-                <p style="font-size: 11px; margin-top: 5px; color: #95a5a6;">Tekan Shift+A untuk akses admin</p>
+                <p style="font-size: 11px; margin-top: 5px; color: #95a5a6;">Tekan <kbd>Shift</kbd> + <kbd>A</kbd> untuk akses admin</p>
             </div>
         </div>
     </div>
@@ -738,7 +727,7 @@
                 <input type="hidden" id="editIndex">
                 <div class="form-group">
                     <label for="productName">Nama Produk</label>
-                    <input type="text" id="productName" placeholder="Contoh: Oroza Kaos Pria Lengan Pendek">
+                    <input type="text" id="productName" placeholder="Contoh: Kaos Fashion Pria">
                 </div>
                 <div class="form-group">
                     <label for="productCategory">Kategori Produk</label>
@@ -753,11 +742,11 @@
                 </div>
                 <div class="form-group">
                     <label for="productPrice">Harga Produk</label>
-                    <input type="text" id="productPrice" placeholder="Contoh: Rp116.609">
+                    <input type="text" id="productPrice" placeholder="Contoh: Rp150.000">
                 </div>
                 <div class="form-group">
-                    <label for="productImage">URL Gambar Produk (Portrait)</label>
-                    <input type="text" id="productImage" placeholder="Masukkan URL gambar portrait">
+                    <label for="productImage">URL Gambar Produk</label>
+                    <input type="text" id="productImage" placeholder="Masukkan URL gambar produk">
                     <small style="color: #666; margin-top: 5px; font-size: 12px;">Gunakan gambar dengan rasio portrait (lebih tinggi daripada lebar)</small>
                 </div>
                 <div class="form-group">
@@ -788,9 +777,6 @@
                     <button class="btn btn-secondary" onclick="deleteAllProducts()" style="width: 100%;">
                         <i class="fas fa-trash"></i> Hapus Semua Produk
                     </button>
-                    <button class="btn btn-secondary" onclick="clearCacheAndReset()" style="width: 100%; margin-top: 10px; background: #d35400;">
-                        <i class="fas fa-sync-alt"></i> Reset & Clear Cache
-                    </button>
                 </div>
             </div>
         </div>
@@ -800,8 +786,7 @@
 
     <script>
         // Key untuk localStorage
-        const STORAGE_KEY = 'linktree_products';
-        const STORAGE_INITIALIZED_KEY = 'linktree_initialized';
+        const STORAGE_KEY = 'aisah_shopp_products';
         const PRODUCTS_PER_PAGE = 4;
 
         // Kategori yang tersedia
@@ -821,87 +806,26 @@
         let currentCategory = 'all';
         let currentSearch = '';
 
-        // Fungsi untuk mendapatkan produk dari localStorage
+        // Fungsi untuk mendapatkan produk dari localStorage - KOSONG AWALNYA
         function getProductsFromStorage() {
             const storedProducts = localStorage.getItem(STORAGE_KEY);
-            const isInitialized = localStorage.getItem(STORAGE_INITIALIZED_KEY);
-            
-            if (!isInitialized) {
-                localStorage.setItem(STORAGE_INITIALIZED_KEY, 'true');
-                return getDefaultProducts();
-            }
-            
             if (storedProducts) {
-                return JSON.parse(storedProducts);
-            }
-            
-            return getDefaultProducts();
-        }
-
-        // Data produk default dengan kategori
-        function getDefaultProducts() {
-            return [
-                {
-                    name: "Oroza Kaos Pria Lengan Pendek",
-                    price: "Rp116.609",
-                    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dHNoaXJ0fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
-                    link: "https://shope.ee/8A2FpNqXrX",
-                    category: "fashion"
-                },
-                {
-                    name: "Parfume Raudah MADINAH",
-                    price: "Rp204.250",
-                    image: "https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyZnVtZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                    link: "https://shope.ee/7UjJpJ6vX2",
-                    category: "kecantikan"
-                },
-                {
-                    name: "CREDIFOX Jaket gurung",
-                    price: "Rp203.998",
-                    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8amFja2V0fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
-                    link: "https://shope.ee/4V6KJvR4Xp",
-                    category: "fashion"
-                },
-                {
-                    name: "Gamis TOYOBO Polos",
-                    price: "Rp98.999",
-                    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z2FtaXN8ZW58MHx8MHx8fDA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                    link: "https://shope.ee/5fR5Y6vX2r",
-                    category: "fashion"
-                },
-                {
-                    name: "Smart Watch Pro Series",
-                    price: "Rp350.000",
-                    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                    link: "https://shope.ee/9KQ123XrX",
-                    category: "elektronik"
-                },
-                {
-                    name: "Wireless Earbuds Premium",
-                    price: "Rp189.000",
-                    image: "https://images.unsplash.com/photo-1590658165737-15a047b8b5e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZWFyYnVkc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                    link: "https://shope.ee/7UjJpJ6vX3",
-                    category: "elektronik"
+                try {
+                    return JSON.parse(storedProducts);
+                } catch (e) {
+                    console.error('Error parsing stored products:', e);
+                    return [];
                 }
-            ];
+            }
+            return []; // SELALU KOSONG DI AWAL
         }
 
         // Fungsi untuk menyimpan produk ke localStorage
         function saveProductsToStorage(products) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-            localStorage.setItem(STORAGE_INITIALIZED_KEY, 'true');
         }
 
-        // Fungsi untuk clear cache dan reset
-        function clearCacheAndReset() {
-            if (confirm('Apakah Anda yakin ingin mereset semua data dan cache? Tindakan ini akan menghapus semua produk dan menyegarkan halaman.')) {
-                localStorage.removeItem(STORAGE_KEY);
-                localStorage.removeItem(STORAGE_INITIALIZED_KEY);
-                window.location.reload(true);
-            }
-        }
-
-        // Data produk dari localStorage
+        // Data produk dari localStorage - AWALNYA KOSONG
         let products = getProductsFromStorage();
 
         // Elemen DOM
@@ -930,7 +854,7 @@
             });
         }
 
-        // Render kategori - FIXED GRID LAYOUT
+        // Render kategori
         function renderCategories() {
             categoriesContainer.innerHTML = '';
             CATEGORIES.forEach(category => {
@@ -997,9 +921,9 @@
             if (filteredProducts.length === 0) {
                 productGrid.innerHTML = `
                     <div class="no-products">
-                        <i class="fas fa-search"></i>
-                        <p>${currentSearch ? 'Produk tidak ditemukan' : 'Belum ada produk. Tambahkan produk.'}</p>
-                        ${currentSearch ? '<small>Coba kata kunci lain atau hapus pencarian</small>' : ''}
+                        <i class="fas fa-box-open"></i>
+                        <p>Belum ada produk</p>
+                        <p style="font-size: 13px; color: #95a5a6; margin-top: 10px;">Tekan <kbd>Shift</kbd> + <kbd>A</kbd> untuk menambah produk pertama</p>
                     </div>
                 `;
             } else {
@@ -1173,22 +1097,28 @@
             const product = { name, price, image, link, category };
 
             if (editIndex === '') {
+                // Tambah produk baru
                 products.push(product);
                 showHint('Produk berhasil ditambahkan!');
+                
+                // Jika produk baru ditambah di halaman terakhir, pindah ke halaman terakhir
                 totalPages = calculateTotalPages();
                 if (currentPage !== totalPages) {
                     currentPage = totalPages;
                 }
             } else {
+                // Edit produk yang ada
                 products[editIndex] = product;
                 showHint('Produk berhasil diupdate!');
                 editIndexInput.value = '';
             }
 
+            // Simpan ke localStorage
             saveProductsToStorage(products);
             renderProducts();
             renderCategories();
             
+            // Reset form
             document.getElementById('productName').value = '';
             document.getElementById('productPrice').value = '';
             document.getElementById('productImage').value = '';
