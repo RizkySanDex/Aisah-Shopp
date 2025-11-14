@@ -785,336 +785,391 @@
     <div class="admin-hint" id="adminHint">Panel Admin Ditutup</div>
 
     <script>
-        // Key untuk localStorage
-        const STORAGE_KEY = 'aisah_shopp_products';
-        const PRODUCTS_PER_PAGE = 4;
+    // Key untuk localStorage dengan VERSION CONTROL
+    const APP_VERSION = '2.0.0';
+    const STORAGE_KEY = `aisah_shopp_${APP_VERSION}`;
+    const PRODUCTS_PER_PAGE = 4;
 
-        // Kategori yang tersedia
-        const CATEGORIES = [
-            { id: 'all', name: 'Semua' },
-            { id: 'fashion', name: 'Fashion' },
-            { id: 'elektronik', name: 'Elektronik' },
-            { id: 'kecantikan', name: 'Kecantikan' },
-            { id: 'rumah-tangga', name: 'Rumah Tangga' },
-            { id: 'hobi', name: 'Hobi' },
-            { id: 'lainnya', name: 'Lainnya' }
-        ];
+    // Kategori yang tersedia
+    const CATEGORIES = [
+        { id: 'all', name: 'Semua' },
+        { id: 'fashion', name: 'Fashion' },
+        { id: 'elektronik', name: 'Elektronik' },
+        { id: 'kecantikan', name: 'Kecantikan' },
+        { id: 'rumah-tangga', name: 'Rumah Tangga' },
+        { id: 'hobi', name: 'Hobi' },
+        { id: 'lainnya', name: 'Lainnya' }
+    ];
 
-        // Variabel global
-        let currentPage = 1;
-        let totalPages = 1;
-        let currentCategory = 'all';
-        let currentSearch = '';
+    // Variabel global
+    let currentPage = 1;
+    let totalPages = 1;
+    let currentCategory = 'all';
+    let currentSearch = '';
 
-        // Fungsi untuk mendapatkan produk dari localStorage - KOSONG AWALNYA
-        function getProductsFromStorage() {
+    // === CACHE BUSTING ===
+    // Force clear cache lama
+    (function() {
+        // Hapus versi lama
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('aisah_shopp') && key !== STORAGE_KEY) {
+                localStorage.removeItem(key);
+            }
+        }
+        
+        // Add cache busting parameter
+        if (!window.location.search.includes('v=')) {
+            const newUrl = window.location.href + (window.location.search ? '&' : '?') + 'v=' + APP_VERSION + '&t=' + Date.now();
+            window.history.replaceState(null, null, newUrl);
+        }
+    })();
+
+    // Fungsi untuk mendapatkan produk dari localStorage
+    function getProductsFromStorage() {
+        try {
             const storedProducts = localStorage.getItem(STORAGE_KEY);
             if (storedProducts) {
-                try {
-                    return JSON.parse(storedProducts);
-                } catch (e) {
-                    console.error('Error parsing stored products:', e);
-                    return [];
-                }
+                return JSON.parse(storedProducts);
             }
-            return []; // SELALU KOSONG DI AWAL
+        } catch (e) {
+            console.error('Error loading products:', e);
         }
+        return []; // SELALU KOSONG DI AWAL
+    }
 
-        // Fungsi untuk menyimpan produk ke localStorage
-        function saveProductsToStorage(products) {
+    // Fungsi untuk menyimpan produk ke localStorage
+    function saveProductsToStorage(products) {
+        try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+            return true;
+        } catch (e) {
+            console.error('Error saving products:', e);
+            return false;
         }
+    }
 
-        // Data produk dari localStorage - AWALNYA KOSONG
-        let products = getProductsFromStorage();
+    // Fungsi untuk sync data across browsers
+    function syncDataAcrossBrowsers() {
+        // Simpan timestamp terakhir update
+        localStorage.setItem(`${STORAGE_KEY}_last_update`, Date.now());
+        
+        // Trigger storage event untuk sync (jika multiple tabs)
+        window.dispatchEvent(new Event('storage'));
+    }
 
-        // Elemen DOM
-        const adminPanel = document.getElementById('adminPanel');
-        const productGrid = document.getElementById('productGrid');
-        const adminHint = document.getElementById('adminHint');
-        const saveProductBtn = document.getElementById('saveProduct');
-        const closeAdminBtn = document.getElementById('closeAdmin');
-        const editIndexInput = document.getElementById('editIndex');
-        const productCount = document.getElementById('productCount');
-        const pagination = document.getElementById('pagination');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const pageInfo = document.getElementById('pageInfo');
-        const adminProductList = document.getElementById('adminProductList');
-        const searchInput = document.getElementById('searchInput');
-        const categoriesContainer = document.getElementById('categoriesContainer');
+    // Data produk dari localStorage
+    let products = getProductsFromStorage();
 
-        // Filter produk berdasarkan kategori dan pencarian
-        function getFilteredProducts() {
-            return products.filter(product => {
-                const matchesCategory = currentCategory === 'all' || product.category === currentCategory;
-                const matchesSearch = product.name.toLowerCase().includes(currentSearch.toLowerCase()) ||
-                                    product.price.toLowerCase().includes(currentSearch.toLowerCase());
-                return matchesCategory && matchesSearch;
-            });
-        }
+    // Elemen DOM
+    const adminPanel = document.getElementById('adminPanel');
+    const productGrid = document.getElementById('productGrid');
+    const adminHint = document.getElementById('adminHint');
+    const saveProductBtn = document.getElementById('saveProduct');
+    const closeAdminBtn = document.getElementById('closeAdmin');
+    const editIndexInput = document.getElementById('editIndex');
+    const productCount = document.getElementById('productCount');
+    const pagination = document.getElementById('pagination');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const pageInfo = document.getElementById('pageInfo');
+    const adminProductList = document.getElementById('adminProductList');
+    const searchInput = document.getElementById('searchInput');
+    const categoriesContainer = document.getElementById('categoriesContainer');
 
-        // Render kategori
-        function renderCategories() {
-            categoriesContainer.innerHTML = '';
-            CATEGORIES.forEach(category => {
-                const categoryBtn = document.createElement('button');
-                categoryBtn.className = `category-btn ${currentCategory === category.id ? 'active' : ''}`;
-                categoryBtn.textContent = category.name;
-                categoryBtn.onclick = () => setCategory(category.id);
-                categoriesContainer.appendChild(categoryBtn);
-            });
-        }
-
-        // Set kategori aktif
-        function setCategory(categoryId) {
-            currentCategory = categoryId;
-            currentPage = 1;
+    // Listen for storage changes (untuk sync antar tab/browser)
+    window.addEventListener('storage', function(e) {
+        if (e.key === STORAGE_KEY) {
+            products = getProductsFromStorage();
+            renderProducts();
             renderCategories();
+            showHint('Data diperbarui');
+        }
+    });
+
+    // Filter produk berdasarkan kategori dan pencarian
+    function getFilteredProducts() {
+        return products.filter(product => {
+            const matchesCategory = currentCategory === 'all' || product.category === currentCategory;
+            const matchesSearch = product.name.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                                product.price.toLowerCase().includes(currentSearch.toLowerCase());
+            return matchesCategory && matchesSearch;
+        });
+    }
+
+    // Render kategori
+    function renderCategories() {
+        if (!categoriesContainer) return;
+        categoriesContainer.innerHTML = '';
+        CATEGORIES.forEach(category => {
+            const categoryBtn = document.createElement('button');
+            categoryBtn.className = `category-btn ${currentCategory === category.id ? 'active' : ''}`;
+            categoryBtn.textContent = category.name;
+            categoryBtn.onclick = () => setCategory(category.id);
+            categoriesContainer.appendChild(categoryBtn);
+        });
+    }
+
+    // Set kategori aktif
+    function setCategory(categoryId) {
+        currentCategory = categoryId;
+        currentPage = 1;
+        renderCategories();
+        renderProducts();
+    }
+
+    // Setup event listener untuk search
+    function setupSearch() {
+        if (!searchInput) return;
+        searchInput.addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            currentPage = 1;
+            renderProducts();
+        });
+    }
+
+    // Fungsi untuk menghitung total halaman
+    function calculateTotalPages() {
+        const filteredProducts = getFilteredProducts();
+        return Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+    }
+
+    // Fungsi untuk mendapatkan produk untuk halaman tertentu
+    function getProductsForPage(page) {
+        const filteredProducts = getFilteredProducts();
+        const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
+        const endIndex = startIndex + PRODUCTS_PER_PAGE;
+        return filteredProducts.slice(startIndex, endIndex);
+    }
+
+    // Fungsi untuk update pagination controls
+    function updatePaginationControls() {
+        if (!pagination || !prevBtn || !nextBtn || !pageInfo) return;
+        
+        totalPages = calculateTotalPages();
+        
+        if (totalPages <= 1) {
+            pagination.style.display = 'none';
+        } else {
+            pagination.style.display = 'flex';
+        }
+        
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+        pageInfo.textContent = `Halaman ${currentPage} dari ${totalPages}`;
+    }
+
+    // Tampilkan produk untuk halaman saat ini
+    function renderProducts() {
+        if (!productGrid || !productCount) return;
+        
+        productGrid.innerHTML = '';
+        const filteredProducts = getFilteredProducts();
+        const productsToShow = getProductsForPage(currentPage);
+        
+        if (filteredProducts.length === 0) {
+            productGrid.innerHTML = `
+                <div class="no-products">
+                    <i class="fas fa-box-open"></i>
+                    <p>Belum ada produk</p>
+                    <p style="font-size: 13px; color: #95a5a6; margin-top: 10px;">Tekan <kbd>Shift</kbd> + <kbd>A</kbd> untuk menambah produk pertama</p>
+                </div>
+            `;
+        } else {
+            productsToShow.forEach((product, index) => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                
+                const categoryName = CATEGORIES.find(cat => cat.id === product.category)?.name || 'Lainnya';
+                
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="product-image" onerror="this.src='https://via.placeholder.com/300x400/ffffff/666666?text=Gambar+Tidak+Ada'">
+                    <div class="product-info">
+                        <div class="product-category">${categoryName}</div>
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">${product.price}</div>
+                        <a href="${product.link}" class="buy-button" target="_blank">Beli Sekarang</a>
+                    </div>
+                `;
+                productGrid.appendChild(productCard);
+            });
+        }
+        
+        // Update jumlah produk
+        const filteredCount = getFilteredProducts().length;
+        const totalCount = products.length;
+        productCount.textContent = `${filteredCount} produk${currentSearch || currentCategory !== 'all' ? ` (dari ${totalCount} total)` : ''}`;
+        
+        // Update pagination
+        updatePaginationControls();
+        
+        // Update admin product list
+        renderAdminProductList();
+    }
+
+    // Tampilkan daftar produk di panel admin
+    function renderAdminProductList() {
+        if (!adminProductList) return;
+        
+        adminProductList.innerHTML = '';
+        
+        if (products.length === 0) {
+            adminProductList.innerHTML = `
+                <div style="text-align: center; padding: 20px; color: #7f8c8d;">
+                    <i class="fas fa-box-open" style="font-size: 24px; margin-bottom: 10px;"></i>
+                    <p>Belum ada produk</p>
+                </div>
+            `;
+        } else {
+            products.forEach((product, index) => {
+                const productItem = document.createElement('div');
+                productItem.className = 'product-item';
+                
+                const categoryName = CATEGORIES.find(cat => cat.id === product.category)?.name || 'Lainnya';
+                
+                productItem.innerHTML = `
+                    <div class="product-item-info">
+                        <div class="product-item-name">${product.name}</div>
+                        <div class="product-item-price">${product.price}</div>
+                        <div class="product-item-category">${categoryName}</div>
+                    </div>
+                    <div class="product-item-actions">
+                        <button class="action-btn edit-btn" onclick="editProduct(${index})" title="Edit Produk">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteProduct(${index})" title="Hapus Produk">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                adminProductList.appendChild(productItem);
+            });
+        }
+    }
+
+    // Fungsi untuk ganti halaman
+    function changePage(direction) {
+        const newPage = currentPage + direction;
+        
+        if (newPage >= 1 && newPage <= totalPages) {
+            currentPage = newPage;
             renderProducts();
         }
+    }
 
-        // Setup event listener untuk search
-        function setupSearch() {
-            searchInput.addEventListener('input', (e) => {
-                currentSearch = e.target.value;
-                currentPage = 1;
+    // Fungsi untuk menghapus semua produk
+    function deleteAllProducts() {
+        if (products.length === 0) {
+            showHint('Tidak ada produk untuk dihapus');
+            return;
+        }
+        
+        if (confirm('Apakah Anda yakin ingin menghapus semua produk? Tindakan ini tidak dapat dibatalkan!')) {
+            products = [];
+            currentPage = 1;
+            currentCategory = 'all';
+            currentSearch = '';
+            if (searchInput) searchInput.value = '';
+            saveProductsToStorage(products);
+            syncDataAcrossBrowsers();
+            renderProducts();
+            renderCategories();
+            showHint('Semua produk berhasil dihapus');
+        }
+    }
+
+    // Fungsi untuk menghapus produk tertentu
+    function deleteProduct(index) {
+        if (confirm(`Apakah Anda yakin ingin menghapus produk "${products[index].name}"?`)) {
+            products.splice(index, 1);
+            saveProductsToStorage(products);
+            syncDataAcrossBrowsers();
+            renderProducts();
+            showHint('Produk berhasil dihapus');
+            
+            if (getProductsForPage(currentPage).length === 0 && currentPage > 1) {
+                currentPage--;
                 renderProducts();
-            });
-        }
-
-        // Fungsi untuk menghitung total halaman
-        function calculateTotalPages() {
-            const filteredProducts = getFilteredProducts();
-            return Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
-        }
-
-        // Fungsi untuk mendapatkan produk untuk halaman tertentu
-        function getProductsForPage(page) {
-            const filteredProducts = getFilteredProducts();
-            const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
-            const endIndex = startIndex + PRODUCTS_PER_PAGE;
-            return filteredProducts.slice(startIndex, endIndex);
-        }
-
-        // Fungsi untuk update pagination controls
-        function updatePaginationControls() {
-            totalPages = calculateTotalPages();
-            
-            if (totalPages <= 1) {
-                pagination.style.display = 'none';
-            } else {
-                pagination.style.display = 'flex';
             }
-            
-            prevBtn.disabled = currentPage === 1;
-            nextBtn.disabled = currentPage === totalPages;
-            pageInfo.textContent = `Halaman ${currentPage} dari ${totalPages}`;
         }
+    }
 
-        // Tampilkan produk untuk halaman saat ini
-        function renderProducts() {
-            productGrid.innerHTML = '';
-            const filteredProducts = getFilteredProducts();
-            const productsToShow = getProductsForPage(currentPage);
-            
-            if (filteredProducts.length === 0) {
-                productGrid.innerHTML = `
-                    <div class="no-products">
-                        <i class="fas fa-box-open"></i>
-                        <p>Belum ada produk</p>
-                        <p style="font-size: 13px; color: #95a5a6; margin-top: 10px;">Tekan <kbd>Shift</kbd> + <kbd>A</kbd> untuk menambah produk pertama</p>
-                    </div>
-                `;
-            } else {
-                productsToShow.forEach((product, index) => {
-                    const productCard = document.createElement('div');
-                    productCard.className = 'product-card';
-                    
-                    const categoryName = CATEGORIES.find(cat => cat.id === product.category)?.name || 'Lainnya';
-                    
-                    productCard.innerHTML = `
-                        <img src="${product.image}" alt="${product.name}" class="product-image">
-                        <div class="product-info">
-                            <div class="product-category">${categoryName}</div>
-                            <div class="product-name">${product.name}</div>
-                            <div class="product-price">${product.price}</div>
-                            <a href="${product.link}" class="buy-button" target="_blank">Beli Sekarang</a>
-                        </div>
-                    `;
-                    productGrid.appendChild(productCard);
-                });
-            }
-            
-            // Update jumlah produk
-            const filteredCount = getFilteredProducts().length;
-            const totalCount = products.length;
-            productCount.textContent = `${filteredCount} produk${currentSearch || currentCategory !== 'all' ? ` (dari ${totalCount} total)` : ''}`;
-            
-            // Update pagination
-            updatePaginationControls();
-            
-            // Update admin product list
+    // Fungsi untuk mengedit produk
+    function editProduct(index) {
+        const product = products[index];
+        document.getElementById('productName').value = product.name;
+        document.getElementById('productPrice').value = product.price;
+        document.getElementById('productImage').value = product.image;
+        document.getElementById('productLink').value = product.link;
+        document.getElementById('productCategory').value = product.category;
+        editIndexInput.value = index;
+        
+        document.querySelector('.admin-form').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Fungsi untuk menampilkan/menyembunyikan panel admin
+    function toggleAdminPanel() {
+        if (adminPanel.style.display === 'flex') {
+            adminPanel.style.display = 'none';
+            showHint('Panel Admin Ditutup');
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productImage').value = '';
+            document.getElementById('productLink').value = '';
+            document.getElementById('productCategory').value = 'fashion';
+            editIndexInput.value = '';
+        } else {
+            adminPanel.style.display = 'flex';
             renderAdminProductList();
         }
+    }
 
-        // Tampilkan daftar produk di panel admin
-        function renderAdminProductList() {
-            adminProductList.innerHTML = '';
+    // Fungsi untuk menampilkan pesan hint
+    function showHint(message) {
+        if (!adminHint) return;
+        adminHint.textContent = message;
+        adminHint.classList.add('show');
+        setTimeout(() => {
+            adminHint.classList.remove('show');
+        }, 2000);
+    }
+
+    // Fungsi untuk menambah/mengedit produk
+    function saveProduct() {
+        const name = document.getElementById('productName').value;
+        const price = document.getElementById('productPrice').value;
+        const image = document.getElementById('productImage').value;
+        const link = document.getElementById('productLink').value;
+        const category = document.getElementById('productCategory').value;
+        const editIndex = editIndexInput.value;
+
+        if (!name || !price || !image || !link) {
+            alert('Harap isi semua field!');
+            return;
+        }
+
+        const product = { name, price, image, link, category };
+
+        if (editIndex === '') {
+            // Tambah produk baru
+            products.push(product);
+            showHint('Produk berhasil ditambahkan!');
             
-            if (products.length === 0) {
-                adminProductList.innerHTML = `
-                    <div style="text-align: center; padding: 20px; color: #7f8c8d;">
-                        <i class="fas fa-box-open" style="font-size: 24px; margin-bottom: 10px;"></i>
-                        <p>Belum ada produk</p>
-                    </div>
-                `;
-            } else {
-                products.forEach((product, index) => {
-                    const productItem = document.createElement('div');
-                    productItem.className = 'product-item';
-                    
-                    const categoryName = CATEGORIES.find(cat => cat.id === product.category)?.name || 'Lainnya';
-                    
-                    productItem.innerHTML = `
-                        <div class="product-item-info">
-                            <div class="product-item-name">${product.name}</div>
-                            <div class="product-item-price">${product.price}</div>
-                            <div class="product-item-category">${categoryName}</div>
-                        </div>
-                        <div class="product-item-actions">
-                            <button class="action-btn edit-btn" onclick="editProduct(${index})" title="Edit Produk">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn delete-btn" onclick="deleteProduct(${index})" title="Hapus Produk">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    `;
-                    adminProductList.appendChild(productItem);
-                });
+            // Jika produk baru ditambah di halaman terakhir, pindah ke halaman terakhir
+            totalPages = calculateTotalPages();
+            if (currentPage !== totalPages) {
+                currentPage = totalPages;
             }
+        } else {
+            // Edit produk yang ada
+            products[editIndex] = product;
+            showHint('Produk berhasil diupdate!');
+            editIndexInput.value = '';
         }
 
-        // Fungsi untuk ganti halaman
-        function changePage(direction) {
-            const newPage = currentPage + direction;
-            
-            if (newPage >= 1 && newPage <= totalPages) {
-                currentPage = newPage;
-                renderProducts();
-            }
-        }
-
-        // Fungsi untuk menghapus semua produk
-        function deleteAllProducts() {
-            if (products.length === 0) {
-                showHint('Tidak ada produk untuk dihapus');
-                return;
-            }
-            
-            if (confirm('Apakah Anda yakin ingin menghapus semua produk? Tindakan ini tidak dapat dibatalkan!')) {
-                products = [];
-                currentPage = 1;
-                currentCategory = 'all';
-                currentSearch = '';
-                searchInput.value = '';
-                saveProductsToStorage(products);
-                renderProducts();
-                renderCategories();
-                showHint('Semua produk berhasil dihapus');
-            }
-        }
-
-        // Fungsi untuk menghapus produk tertentu
-        function deleteProduct(index) {
-            if (confirm(`Apakah Anda yakin ingin menghapus produk "${products[index].name}"?`)) {
-                products.splice(index, 1);
-                saveProductsToStorage(products);
-                renderProducts();
-                showHint('Produk berhasil dihapus');
-                
-                if (getProductsForPage(currentPage).length === 0 && currentPage > 1) {
-                    currentPage--;
-                    renderProducts();
-                }
-            }
-        }
-
-        // Fungsi untuk mengedit produk
-        function editProduct(index) {
-            const product = products[index];
-            document.getElementById('productName').value = product.name;
-            document.getElementById('productPrice').value = product.price;
-            document.getElementById('productImage').value = product.image;
-            document.getElementById('productLink').value = product.link;
-            document.getElementById('productCategory').value = product.category;
-            editIndexInput.value = index;
-            
-            document.querySelector('.admin-form').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Fungsi untuk menampilkan/menyembunyikan panel admin
-        function toggleAdminPanel() {
-            if (adminPanel.style.display === 'flex') {
-                adminPanel.style.display = 'none';
-                showHint('Panel Admin Ditutup');
-                document.getElementById('productName').value = '';
-                document.getElementById('productPrice').value = '';
-                document.getElementById('productImage').value = '';
-                document.getElementById('productLink').value = '';
-                document.getElementById('productCategory').value = 'fashion';
-                editIndexInput.value = '';
-            } else {
-                adminPanel.style.display = 'flex';
-                renderAdminProductList();
-            }
-        }
-
-        // Fungsi untuk menampilkan pesan hint
-        function showHint(message) {
-            adminHint.textContent = message;
-            adminHint.classList.add('show');
-            setTimeout(() => {
-                adminHint.classList.remove('show');
-            }, 2000);
-        }
-
-        // Fungsi untuk menambah/mengedit produk
-        function saveProduct() {
-            const name = document.getElementById('productName').value;
-            const price = document.getElementById('productPrice').value;
-            const image = document.getElementById('productImage').value;
-            const link = document.getElementById('productLink').value;
-            const category = document.getElementById('productCategory').value;
-            const editIndex = editIndexInput.value;
-
-            if (!name || !price || !image || !link) {
-                alert('Harap isi semua field!');
-                return;
-            }
-
-            const product = { name, price, image, link, category };
-
-            if (editIndex === '') {
-                // Tambah produk baru
-                products.push(product);
-                showHint('Produk berhasil ditambahkan!');
-                
-                // Jika produk baru ditambah di halaman terakhir, pindah ke halaman terakhir
-                totalPages = calculateTotalPages();
-                if (currentPage !== totalPages) {
-                    currentPage = totalPages;
-                }
-            } else {
-                // Edit produk yang ada
-                products[editIndex] = product;
-                showHint('Produk berhasil diupdate!');
-                editIndexInput.value = '';
-            }
-
-            // Simpan ke localStorage
-            saveProductsToStorage(products);
+        // Simpan ke localStorage
+        if (saveProductsToStorage(products)) {
+            syncDataAcrossBrowsers();
             renderProducts();
             renderCategories();
             
@@ -1124,23 +1179,34 @@
             document.getElementById('productImage').value = '';
             document.getElementById('productLink').value = '';
             document.getElementById('productCategory').value = 'fashion';
+        } else {
+            alert('Gagal menyimpan produk. Coba lagi.');
         }
+    }
 
-        // Event listener untuk shortcut keyboard
-        document.addEventListener('keydown', (e) => {
-            if (e.shiftKey && e.key === 'A') {
-                toggleAdminPanel();
-            }
-        });
+    // Event listener untuk shortcut keyboard
+    document.addEventListener('keydown', (e) => {
+        if (e.shiftKey && e.key === 'A') {
+            toggleAdminPanel();
+        }
+    });
 
-        // Event listener untuk tombol
-        saveProductBtn.addEventListener('click', saveProduct);
-        closeAdminBtn.addEventListener('click', toggleAdminPanel);
+    // Event listener untuk tombol
+    if (saveProductBtn) saveProductBtn.addEventListener('click', saveProduct);
+    if (closeAdminBtn) closeAdminBtn.addEventListener('click', toggleAdminPanel);
 
-        // Inisialisasi
+    // Force refresh data setiap kali page load
+    window.addEventListener('load', function() {
+        products = getProductsFromStorage();
         renderCategories();
         setupSearch();
         renderProducts();
-    </script>
+    });
+
+    // Inisialisasi
+    renderCategories();
+    setupSearch();
+    renderProducts();
+</script>
 </body>
 </html>
