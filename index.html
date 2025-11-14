@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aisah-Shopp | Linktree</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -680,7 +681,7 @@
         let currentCategory = 'all';
         let currentSearch = '';
 
-        // === SHARE SYSTEM YANG DIPERBAIKI ===
+        // === SHARE SYSTEM DENGAN KOMPRESI ===
         function generateShareLink() {
             if (products.length === 0) {
                 showHint('Tidak ada produk untuk dibagikan!');
@@ -688,16 +689,20 @@
             }
 
             try {
-                // Encode data dengan method yang lebih reliable
+                // Kompres data menggunakan LZ-String
                 const dataString = JSON.stringify(products);
-                const compressedData = encodeURIComponent(dataString);
+                const compressedData = LZString.compressToEncodedURIComponent(dataString);
                 
                 const baseUrl = window.location.origin + window.location.pathname;
-                const shareLink = `${baseUrl}?data=${compressedData}`;
+                const shareLink = `${baseUrl}?p=${compressedData}`;
+                
+                console.log('Original data length:', dataString.length);
+                console.log('Compressed data length:', compressedData.length);
+                console.log('Compression ratio:', (compressedData.length / dataString.length * 100).toFixed(2) + '%');
                 
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(shareLink).then(() => {
-                        showHint('✅ Link berhasil disalin! Bagikan ke browser lain.');
+                        showHint('✅ Link berhasil disalin! Link sekarang lebih pendek.');
                     }).catch(() => {
                         fallbackCopy(shareLink);
                     });
@@ -706,6 +711,30 @@
                 }
             } catch (error) {
                 console.error('Error generating share link:', error);
+                // Fallback ke method tanpa kompresi
+                generateShareLinkWithoutCompression();
+            }
+        }
+
+        function generateShareLinkWithoutCompression() {
+            try {
+                const dataString = JSON.stringify(products);
+                const encodedData = encodeURIComponent(dataString);
+                
+                const baseUrl = window.location.origin + window.location.pathname;
+                const shareLink = `${baseUrl}?data=${encodedData}`;
+                
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(shareLink).then(() => {
+                        showHint('✅ Link berhasil disalin! (Tanpa kompresi)');
+                    }).catch(() => {
+                        fallbackCopy(shareLink);
+                    });
+                } else {
+                    fallbackCopy(shareLink);
+                }
+            } catch (error) {
+                console.error('Error generating fallback share link:', error);
                 showHint('❌ Error membuat link share');
             }
         }
@@ -717,41 +746,59 @@
             tempInput.select();
             document.execCommand('copy');
             document.body.removeChild(tempInput);
-            showHint('✅ Link berhasil disalin! Bagikan ke browser lain.');
+            showHint('✅ Link berhasil disalin!');
         }
 
         function loadFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
-            const dataParam = urlParams.get('data');
+            const compressedData = urlParams.get('p');
+            const fallbackData = urlParams.get('data');
             
-            if (dataParam) {
+            // Coba load data terkompresi dulu
+            if (compressedData) {
                 try {
-                    // Decode data dengan method yang sama
-                    const decodedData = decodeURIComponent(dataParam);
-                    const urlProducts = JSON.parse(decodedData);
-                    
-                    if (Array.isArray(urlProducts) && urlProducts.length > 0) {
-                        // Cek apakah data berbeda dengan yang sekarang
-                        const currentData = JSON.stringify(products);
-                        const newData = JSON.stringify(urlProducts);
-                        
-                        if (currentData !== newData) {
-                            if (confirm(`🎉 Ditemukan ${urlProducts.length} produk dari link! Ganti data lokal?`)) {
-                                products = urlProducts;
-                                saveProductsToStorage(products);
-                                renderProducts();
-                                renderCategories();
-                                showHint(`✅ ${urlProducts.length} produk berhasil dimuat!`);
-                                
-                                // Hapus parameter dari URL tanpa reload
-                                const newUrl = window.location.origin + window.location.pathname;
-                                window.history.replaceState({}, document.title, newUrl);
-                            }
-                        }
+                    const decompressedData = LZString.decompressFromEncodedURIComponent(compressedData);
+                    if (decompressedData) {
+                        const urlProducts = JSON.parse(decompressedData);
+                        processUrlProducts(urlProducts, 'kompresi');
+                        return;
                     }
                 } catch (error) {
-                    console.error('Error loading data from URL:', error);
+                    console.error('Error decompressing data:', error);
+                }
+            }
+            
+            // Fallback ke data tanpa kompresi
+            if (fallbackData) {
+                try {
+                    const decodedData = decodeURIComponent(fallbackData);
+                    const urlProducts = JSON.parse(decodedData);
+                    processUrlProducts(urlProducts, 'fallback');
+                } catch (error) {
+                    console.error('Error loading fallback data:', error);
                     showHint('❌ Error memuat data dari link');
+                }
+            }
+        }
+
+        function processUrlProducts(urlProducts, method) {
+            if (Array.isArray(urlProducts) && urlProducts.length > 0) {
+                // Cek apakah data berbeda dengan yang sekarang
+                const currentData = JSON.stringify(products);
+                const newData = JSON.stringify(urlProducts);
+                
+                if (currentData !== newData) {
+                    if (confirm(`🎉 Ditemukan ${urlProducts.length} produk dari link! Ganti data lokal?`)) {
+                        products = urlProducts;
+                        saveProductsToStorage(products);
+                        renderProducts();
+                        renderCategories();
+                        showHint(`✅ ${urlProducts.length} produk berhasil dimuat! (${method})`);
+                        
+                        // Hapus parameter dari URL tanpa reload
+                        const newUrl = window.location.origin + window.location.pathname;
+                        window.history.replaceState({}, document.title, newUrl);
+                    }
                 }
             }
         }
