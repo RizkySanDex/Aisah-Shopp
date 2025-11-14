@@ -785,9 +785,8 @@
     <div class="admin-hint" id="adminHint">Panel Admin Ditutup</div>
 
     <script>
-    // Key untuk localStorage dengan VERSION CONTROL
-    const APP_VERSION = '2.0.0';
-    const STORAGE_KEY = `aisah_shopp_${APP_VERSION}`;
+    // Key untuk localStorage
+    const STORAGE_KEY = 'aisah_shopp_data';
     const PRODUCTS_PER_PAGE = 4;
 
     // Kategori yang tersedia
@@ -807,24 +806,6 @@
     let currentCategory = 'all';
     let currentSearch = '';
 
-    // === CACHE BUSTING ===
-    // Force clear cache lama
-    (function() {
-        // Hapus versi lama
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && key.startsWith('aisah_shopp') && key !== STORAGE_KEY) {
-                localStorage.removeItem(key);
-            }
-        }
-        
-        // Add cache busting parameter
-        if (!window.location.search.includes('v=')) {
-            const newUrl = window.location.href + (window.location.search ? '&' : '?') + 'v=' + APP_VERSION + '&t=' + Date.now();
-            window.history.replaceState(null, null, newUrl);
-        }
-    })();
-
     // Fungsi untuk mendapatkan produk dari localStorage
     function getProductsFromStorage() {
         try {
@@ -835,7 +816,7 @@
         } catch (e) {
             console.error('Error loading products:', e);
         }
-        return []; // SELALU KOSONG DI AWAL
+        return [];
     }
 
     // Fungsi untuk menyimpan produk ke localStorage
@@ -847,15 +828,6 @@
             console.error('Error saving products:', e);
             return false;
         }
-    }
-
-    // Fungsi untuk sync data across browsers
-    function syncDataAcrossBrowsers() {
-        // Simpan timestamp terakhir update
-        localStorage.setItem(`${STORAGE_KEY}_last_update`, Date.now());
-        
-        // Trigger storage event untuk sync (jika multiple tabs)
-        window.dispatchEvent(new Event('storage'));
     }
 
     // Data produk dari localStorage
@@ -877,15 +849,103 @@
     const searchInput = document.getElementById('searchInput');
     const categoriesContainer = document.getElementById('categoriesContainer');
 
-    // Listen for storage changes (untuk sync antar tab/browser)
-    window.addEventListener('storage', function(e) {
-        if (e.key === STORAGE_KEY) {
-            products = getProductsFromStorage();
-            renderProducts();
-            renderCategories();
-            showHint('Data diperbarui');
+    // === FITUR EKSPORT/IMPORT ===
+    function exportData() {
+        const data = {
+            products: products,
+            exportDate: new Date().toISOString(),
+            version: '1.0'
+        };
+        const dataStr = JSON.stringify(data, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'aisah-shopp-data.json';
+        a.click();
+        URL.revokeObjectURL(url);
+        showHint('Data berhasil diexport!');
+    }
+
+    function importData() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.products && Array.isArray(data.products)) {
+                        if (confirm(`Import ${data.products.length} produk? Data saat ini akan diganti.`)) {
+                            products = data.products;
+                            saveProductsToStorage(products);
+                            currentPage = 1;
+                            currentCategory = 'all';
+                            currentSearch = '';
+                            if (searchInput) searchInput.value = '';
+                            renderProducts();
+                            renderCategories();
+                            showHint('Data berhasil diimport!');
+                        }
+                    } else {
+                        alert('Format file tidak valid!');
+                    }
+                } catch (error) {
+                    alert('Error membaca file!');
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+
+    function shareData() {
+        const data = {
+            products: products,
+            timestamp: Date.now()
+        };
+        const dataStr = LZString.compressToBase64(JSON.stringify(data));
+        const url = new URL(window.location.href);
+        url.searchParams.set('data', dataStr);
+        
+        const tempInput = document.createElement('input');
+        tempInput.value = url.toString();
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        
+        showHint('Link berhasil disalin! Tempel di browser lain.');
+    }
+
+    // Load data dari URL parameters
+    function loadDataFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const dataParam = urlParams.get('data');
+        if (dataParam) {
+            try {
+                const decompressed = LZString.decompressFromBase64(dataParam);
+                const data = JSON.parse(decompressed);
+                if (data.products && Array.isArray(data.products)) {
+                    products = data.products;
+                    saveProductsToStorage(products);
+                    // Remove data parameter from URL
+                    const newUrl = new URL(window.location.href);
+                    newUrl.searchParams.delete('data');
+                    window.history.replaceState(null, null, newUrl.toString());
+                    renderProducts();
+                    renderCategories();
+                    showHint('Data berhasil diimport dari link!');
+                }
+            } catch (error) {
+                console.error('Error loading data from URL:', error);
+            }
         }
-    });
+    }
 
     // Filter produk berdasarkan kategori dan pencarian
     function getFilteredProducts() {
@@ -1071,7 +1131,6 @@
             currentSearch = '';
             if (searchInput) searchInput.value = '';
             saveProductsToStorage(products);
-            syncDataAcrossBrowsers();
             renderProducts();
             renderCategories();
             showHint('Semua produk berhasil dihapus');
@@ -1083,7 +1142,6 @@
         if (confirm(`Apakah Anda yakin ingin menghapus produk "${products[index].name}"?`)) {
             products.splice(index, 1);
             saveProductsToStorage(products);
-            syncDataAcrossBrowsers();
             renderProducts();
             showHint('Produk berhasil dihapus');
             
@@ -1131,7 +1189,7 @@
         adminHint.classList.add('show');
         setTimeout(() => {
             adminHint.classList.remove('show');
-        }, 2000);
+        }, 3000);
     }
 
     // Fungsi untuk menambah/mengedit produk
@@ -1151,29 +1209,23 @@
         const product = { name, price, image, link, category };
 
         if (editIndex === '') {
-            // Tambah produk baru
             products.push(product);
             showHint('Produk berhasil ditambahkan!');
             
-            // Jika produk baru ditambah di halaman terakhir, pindah ke halaman terakhir
             totalPages = calculateTotalPages();
             if (currentPage !== totalPages) {
                 currentPage = totalPages;
             }
         } else {
-            // Edit produk yang ada
             products[editIndex] = product;
             showHint('Produk berhasil diupdate!');
             editIndexInput.value = '';
         }
 
-        // Simpan ke localStorage
         if (saveProductsToStorage(products)) {
-            syncDataAcrossBrowsers();
             renderProducts();
             renderCategories();
             
-            // Reset form
             document.getElementById('productName').value = '';
             document.getElementById('productPrice').value = '';
             document.getElementById('productImage').value = '';
@@ -1195,12 +1247,36 @@
     if (saveProductBtn) saveProductBtn.addEventListener('click', saveProduct);
     if (closeAdminBtn) closeAdminBtn.addEventListener('click', toggleAdminPanel);
 
-    // Force refresh data setiap kali page load
-    window.addEventListener('load', function() {
-        products = getProductsFromStorage();
-        renderCategories();
-        setupSearch();
-        renderProducts();
+    // Tambahkan fitur import/export ke admin panel setelah DOM loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load data dari URL jika ada
+        loadDataFromURL();
+        
+        // Tambahkan section import/export di admin panel
+        const dangerZone = document.querySelector('.danger-zone');
+        if (dangerZone) {
+            const importExportHTML = `
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #fed7d7;">
+                    <div class="danger-title">
+                        <i class="fas fa-exchange-alt"></i>
+                        Transfer Data
+                    </div>
+                    <button class="btn btn-secondary" onclick="exportData()" style="width: 100%; background: #27ae60;">
+                        <i class="fas fa-download"></i> Export Data
+                    </button>
+                    <button class="btn btn-secondary" onclick="importData()" style="width: 100%; margin-top: 8px; background: #3498db;">
+                        <i class="fas fa-upload"></i> Import Data
+                    </button>
+                    <button class="btn btn-secondary" onclick="shareData()" style="width: 100%; margin-top: 8px; background: #9b59b6;">
+                        <i class="fas fa-share-alt"></i> Share Link
+                    </button>
+                    <small style="display: block; text-align: center; color: #666; margin-top: 8px; font-size: 11px;">
+                        Gunakan fitur ini untuk sync data antar browser/device
+                    </small>
+                </div>
+            `;
+            dangerZone.insertAdjacentHTML('beforeend', importExportHTML);
+        }
     });
 
     // Inisialisasi
@@ -1208,5 +1284,8 @@
     setupSearch();
     renderProducts();
 </script>
+
+<!-- Tambahkan library kompresi untuk share link -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
 </body>
 </html>
