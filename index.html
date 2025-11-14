@@ -787,15 +787,7 @@
                 const currentData = JSON.stringify(products);
                 const newData = JSON.stringify(urlProducts);
                 
-                if (currentData !== newData) {
-                    if (confirm(`🎉 Ditemukan ${urlProducts.length} produk dari link! Ganti data lokal?`)) {
-                        products = urlProducts;
-                        saveProductsToStorage(products);
-                        renderProducts();
-                        renderCategories();
-                        showHint(`✅ ${urlProducts.length} produk berhasil dimuat! (${method})`);
-                        
-                        // Hapus parameter dari URL tanpa reload
+                                        // Hapus parameter dari URL tanpa reload
                         const newUrl = window.location.origin + window.location.pathname;
                         window.history.replaceState({}, document.title, newUrl);
                     }
