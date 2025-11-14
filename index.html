@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyLinkTree - Toko Online</title>
+    <title>Aisah-Shopp</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -77,6 +77,9 @@
             font-size: 18px;
             border-bottom: 2px solid #f0f0f0;
             padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .product-grid {
@@ -84,6 +87,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 15px;
             margin-top: 15px;
+            min-height: 400px;
         }
 
         .product-card {
@@ -180,6 +184,49 @@
             margin-top: 25px;
             color: #bdc3c7;
             font-size: 14px;
+        }
+
+        /* Pagination Styles */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 10px;
+        }
+
+        .pagination-btn {
+            background: #6a11cb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: #580da8;
+            transform: translateY(-2px);
+        }
+
+        .pagination-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .page-info {
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+            min-width: 100px;
+            text-align: center;
         }
 
         /* Admin Panel Styles */
@@ -296,7 +343,6 @@
             padding: 4px 8px;
             border-radius: 12px;
             font-size: 12px;
-            margin-left: 8px;
         }
 
         .delete-all-btn {
@@ -307,12 +353,17 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 12px;
-            margin-left: 10px;
             transition: background 0.3s;
         }
 
         .delete-all-btn:hover {
             background: #c0392b;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         @media (max-width: 480px) {
@@ -332,6 +383,21 @@
             .product-image {
                 height: 140px;
             }
+            
+            .section-title {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .pagination {
+                gap: 10px;
+            }
+            
+            .pagination-btn {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -344,14 +410,46 @@
                 <p>Selamat datang diToko kami, Kepuasan Anda adalah prioritas utama kami. Selamat berbelanja</p>
             </div>
             
-            <h2 class="section-title">
-                Toko Online Aisah 
-                <span class="product-count" id="productCount">0 produk</span>
-                      </h2>
+            <div class="section-title">
+                <div class="title-section">
+                    <span>Koleksi Toko Aisah</span>
+                    <span class="product-count" id="productCount">0 produk</span>
+                </div>
+                <button class="delete-all-btn" onclick="deleteAllProducts()">Hapus Semua</button>
+            </div>
+            
             <div class="product-grid" id="productGrid">
                 <!-- Produk akan dimuat di sini melalui JavaScript -->
             </div>
-                       
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination" style="display: none;">
+                <button class="pagination-btn" id="prevBtn" onclick="changePage(-1)">
+                    <i class="fas fa-chevron-left"></i>
+                    Prev
+                </button>
+                <div class="page-info" id="pageInfo">Halaman 1 dari 1</div>
+                <button class="pagination-btn" id="nextBtn" onclick="changePage(1)">
+                    Next
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <div class="social-links">
+                <a href="#" class="social-link">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+            </div>
+            
             <div class="footer">
                 <p>© 2023 Aisah-Shopp. All rights reserved.</p>
                 <p style="font-size: 12px; margin-top: 5px;"></p>
@@ -395,6 +493,11 @@
     <script>
         // Key untuk localStorage
         const STORAGE_KEY = 'linktree_products';
+        const PRODUCTS_PER_PAGE = 4; // 2 baris x 2 kolom = 4 produk per halaman
+
+        // Variabel pagination
+        let currentPage = 1;
+        let totalPages = 1;
 
         // Fungsi untuk mendapatkan produk dari localStorage
         function getProductsFromStorage() {
@@ -427,6 +530,18 @@
                     price: "Rp98.999",
                     image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z2FtaXN8ZW58MHx8MHx8fDA%3D%3D&auto=format&fit=crop&w=500&q=60",
                     link: "https://shope.ee/5fR5Y6vX2r"
+                },
+                {
+                    name: "Smart Watch Pro Series",
+                    price: "Rp350.000",
+                    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+                    link: "https://shope.ee/9KQ123XrX"
+                },
+                {
+                    name: "Wireless Earbuds Premium",
+                    price: "Rp189.000",
+                    image: "https://images.unsplash.com/photo-1590658165737-15a047b8b5e0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZWFyYnVkc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+                    link: "https://shope.ee/7UjJpJ6vX3"
                 }
             ];
         }
@@ -447,8 +562,43 @@
         const closeAdminBtn = document.getElementById('closeAdmin');
         const editIndexInput = document.getElementById('editIndex');
         const productCount = document.getElementById('productCount');
+        const pagination = document.getElementById('pagination');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const pageInfo = document.getElementById('pageInfo');
 
-        // Tampilkan produk
+        // Fungsi untuk menghitung total halaman
+        function calculateTotalPages() {
+            return Math.ceil(products.length / PRODUCTS_PER_PAGE);
+        }
+
+        // Fungsi untuk mendapatkan produk untuk halaman tertentu
+        function getProductsForPage(page) {
+            const startIndex = (page - 1) * PRODUCTS_PER_PAGE;
+            const endIndex = startIndex + PRODUCTS_PER_PAGE;
+            return products.slice(startIndex, endIndex);
+        }
+
+        // Fungsi untuk update pagination controls
+        function updatePaginationControls() {
+            totalPages = calculateTotalPages();
+            
+            // Sembunyikan pagination jika hanya 1 halaman
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+            } else {
+                pagination.style.display = 'flex';
+            }
+            
+            // Update status tombol
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+            
+            // Update info halaman
+            pageInfo.textContent = `Halaman ${currentPage} dari ${totalPages}`;
+        }
+
+        // Tampilkan produk untuk halaman saat ini
         function renderProducts() {
             productGrid.innerHTML = '';
             
@@ -460,7 +610,9 @@
                     </div>
                 `;
             } else {
-                products.forEach((product, index) => {
+                const productsToShow = getProductsForPage(currentPage);
+                
+                productsToShow.forEach((product, index) => {
                     const productCard = document.createElement('div');
                     productCard.className = 'product-card';
                     
@@ -478,6 +630,19 @@
             
             // Update jumlah produk
             productCount.textContent = `${products.length} produk`;
+            
+            // Update pagination
+            updatePaginationControls();
+        }
+
+        // Fungsi untuk ganti halaman
+        function changePage(direction) {
+            const newPage = currentPage + direction;
+            
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                renderProducts();
+            }
         }
 
         // Fungsi untuk menghapus semua produk
@@ -489,6 +654,7 @@
             
             if (confirm('Apakah Anda yakin ingin menghapus semua produk?')) {
                 products = [];
+                currentPage = 1; // Reset ke halaman 1
                 saveProductsToStorage(products);
                 renderProducts();
                 showHint('Semua produk berhasil dihapus');
@@ -539,6 +705,12 @@
                 // Tambah produk baru
                 products.push(product);
                 showHint('Produk berhasil ditambahkan!');
+                
+                // Jika produk baru ditambah di halaman terakhir, pindah ke halaman terakhir
+                totalPages = calculateTotalPages();
+                if (currentPage !== totalPages) {
+                    currentPage = totalPages;
+                }
             } else {
                 // Edit produk yang ada
                 products[editIndex] = product;
