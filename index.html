@@ -1,960 +1,626 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aisah-Shopp | Linktree</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aisah-Shopp</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            min-height: 100vh;
-            padding: 20px;
-        }
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:#f7f7f7;
+    color:#222;
+}
 
-        .container {
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto;
-        }
+.container{width:94%;max-width:1150px;margin:20px auto}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:10px}
+.logo{display:flex;align-items:center;gap:8px}
+.logo i{font-size:1.6rem;color:#ff5314}
+.logo h1{font-size:1.1rem;font-weight:700}
 
-        .main-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+.search-bar{flex:1;display:flex;max-width:520px;margin-left:12px;min-width:200px}
+.search-bar input{
+    flex:1;padding:9px 12px;border:1px solid #ddd;border-radius:6px 0 0 6px
+}
+.search-bar button{
+    background:#2a2a2a;color:white;padding:0 14px;border-radius:0 6px 6px 0;
+}
 
-        .profile-section {
-            margin-bottom: 25px;
-        }
+.nav-links a{margin-left:12px;color:#777;text-decoration:none;font-size:.9rem}
 
-        .profile-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #667eea;
-            margin: 0 auto 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
+.filters-container {
+    position: relative;
+    margin: 14px 0;
+    overflow: hidden;
+}
 
-        .profile-name {
-            font-size: 24px;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 8px;
-        }
+.filters-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
 
-        .profile-bio {
-            color: #718096;
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 5px;
-        }
+.filters-scroll::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
 
-        .search-container {
-            margin: 20px 0;
-            position: relative;
-        }
+.filter-btn{
+    padding:8px 14px;border:1px solid #eee;border-radius:20px;background:#fff;
+    cursor:pointer;color:#666;font-weight:600;font-size:0.87rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.filter-btn.active{background:#ff5314;color:#fff;border-color:#ff5314}
 
-        .search-box {
-            width: 100%;
-            padding: 12px 45px 12px 15px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            background: white;
-        }
+.video-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+    gap:18px;
+}
 
-        .search-box:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
+.video-card{
+    background:white;
+    border-radius:12px;
+    box-shadow:0 6px 20px rgba(0,0,0,0.06);
+    overflow:hidden;
+    transition:.2s;
+}
+.video-card:hover{transform:translateY(-6px)}
 
-        .categories-container {
-            margin: 20px 0;
-        }
+.video-thumb{
+    position:relative;
+    width:100%;
+    aspect-ratio:1/1;
+    background:#f3f3f3;
+}
+.video-thumb img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+.video-duration{
+    position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.6);
+    color:white;padding:3px 7px;font-size:12px;border-radius:6px
+}
 
-        .categories-title {
-            text-align: left;
-            font-size: 14px;
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 12px;
-        }
+.video-info{padding:12px}
+.video-info h3{
+    height:32px;
+    font-size:0.78rem;
+    font-weight:400;
+    overflow:hidden;
+    margin-bottom:4px;
+    line-height:1.25;
+}
+.video-meta{
+    display:flex;justify-content:space-between;font-size:0.85rem;color:#777;
+    margin-bottom:10px
+}
+.video-actions{display:flex;gap:8px}
+.watch-btn,.buy-btn{
+    flex:1;
+    text-align:center;
+    padding:6px 0;
+    font-size:0.75rem;
+    border-radius:5px;
+    text-decoration:none;
+    font-weight:500;
+    color:white;
+}
+.watch-btn{background:#ff5314}
+.buy-btn{background:#2a2a2a}
 
-        .categories-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
+.modal{
+    position:fixed;inset:0;
+    background:rgba(0,0,0,.85);
+    display:none;align-items:center;justify-content:center;
+    padding:10px;z-index:1500;
+}
+.modal.open{display:flex}
 
-        .category-btn {
-            padding: 10px 5px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            background: white;
-            color: #4a5568;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.modal-box{
+    background:white;width:100%;max-width:1180px;max-height:95vh;
+    border-radius:12px;overflow:hidden;
+    position:relative;box-shadow:0 20px 60px rgba(0,0,0,.35);
+    display: flex;
+    flex-direction: column;
+}
 
-        .category-btn:hover {
-            border-color: #667eea;
-            color: #667eea;
-            transform: translateY(-1px);
-        }
+.modal-close{
+    position:absolute;top:16px;right:16px;
+    width:40px;height:40px;border-radius:50%;
+    background:rgba(0,0,0,.45);color:white;
+    font-size:20px;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;border:none;z-index:10;
+}
 
-        .category-btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
+.modal-content-row{
+    display:flex;
+    gap:6px;
+    padding:10px;
+    flex: 1;
+    overflow: auto;
+}
+.modal-left{flex:2}
+.modal-right{flex:1;display:grid;gap:6px}
 
-        .products-section {
-            margin: 25px 0;
-        }
+.modal-video-wrap{
+    position:relative;width:100%;aspect-ratio:16/9;background:black;
+}
+.modal-video-wrap iframe,
+.modal-video-wrap video{
+    position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border:0;
+}
 
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
+/* POSTER GRID RAPAT 100% */
+.image-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,95px);
+    grid-auto-rows:95px;
+    gap:6px;
+    justify-content:start;
+}
+.image-grid img{
+    width:95px;height:95px;
+    object-fit:cover;
+    border-radius:8px;
+    cursor:pointer;
+    border:1px solid #eee;
+    background:#f3f3f3;
+}
 
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #2d3748;
-        }
+.modal-details{
+    padding:10px 16px 14px;
+    border-top:1px solid #eee;
+    margin-top:-4px;
+}
+.modal-details h3{font-size:1.1rem;margin-bottom:4px}
+.modal-details p{color:#555;font-size:0.9rem;margin-bottom:6px;line-height:1.32}
+.product-link{
+    display:inline-block;padding:10px 16px;background:#ff5314;
+    color:white;border-radius:8px;font-weight:700;text-decoration:none;margin-top:4px
+}
 
-        .product-count {
-            background: #667eea;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
+.img-viewer{
+    position:fixed;inset:0;background:rgba(0,0,0,.85);
+    display:none;align-items:center;justify-content:center;
+    z-index:3000;
+}
+.img-viewer.open{display:flex}
 
-        .product-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
+.img-viewer img{
+    max-width:90%;max-height:90%;border-radius:10px;object-fit:contain;
+}
 
-        .product-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            border: 1px solid #f7fafc;
-        }
+.img-viewer-btn{
+    position:absolute;top:50%;transform:translateY(-50%);
+    background:rgba(0,0,0,.6);color:white;
+    width:50px;height:50px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:28px;border:none;cursor:pointer;
+}
+.img-prev{left:20px}
+.img-next{right:20px}
 
-        .product-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
+.img-viewer-close{
+    position:absolute;top:20px;right:20px;
+    width:45px;height:45px;border-radius:50%;
+    font-size:28px;background:rgba(0,0,0,.6);color:white;border:none;cursor:pointer
+}
 
-        .product-image {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-        }
+/* MEDIA QUERIES UNTUK RESPONSIVITAS MOBILE */
+@media(max-width:768px){
+    .modal-content-row{flex-direction:column}
+    
+    /* Header mobile */
+    header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+    
+    .search-bar {
+        margin-left: 0;
+        max-width: 100%;
+    }
+    
+    .nav-links {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    .nav-links a {
+        margin-left: 0;
+    }
+    
+    /* Video grid mobile */
+    .video-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+    }
+    
+    /* Modal mobile */
+    .modal {
+        padding: 5px;
+    }
+    
+    .modal-box {
+        max-height: 98vh;
+    }
+    
+    .modal-content-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .modal-left, .modal-right {
+        flex: none;
+    }
+    
+    .image-grid {
+        grid-template-columns: repeat(auto-fill, 70px);
+        grid-auto-rows: 70px;
+        justify-content: center;
+    }
+    
+    .image-grid img {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .modal-details h3 {
+        font-size: 1rem;
+    }
+    
+    .modal-details p {
+        font-size: 0.85rem;
+    }
+    
+    /* Image viewer mobile */
+    .img-viewer-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+    
+    .img-prev {
+        left: 10px;
+    }
+    
+    .img-next {
+        right: 10px;
+    }
+    
+    .img-viewer-close {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        top: 10px;
+        right: 10px;
+    }
+}
 
-        .product-info {
-            padding: 12px;
-        }
+@media(max-width:480px){
+    .video-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .video-info h3 {
+        font-size: 0.75rem;
+        height: 36px;
+    }
+    
+    .video-actions {
+        flex-direction: column;
+        gap: 6px;
+    }
+    
+    .watch-btn, .buy-btn {
+        padding: 8px 0;
+        font-size: 0.8rem;
+    }
+    
+    .logo h1 {
+        font-size: 1rem;
+    }
+    
+    .search-bar input {
+        padding: 10px 12px;
+    }
+    
+    .filter-btn {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .modal-details {
+        padding: 8px 12px 12px;
+    }
+}
 
-        .product-category {
-            font-size: 9px;
-            color: #718096;
-            background: #f7fafc;
-            padding: 3px 8px;
-            border-radius: 8px;
-            display: inline-block;
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-
-        .product-name {
-            font-size: 12px;
-            font-weight: 600;
-            color: #2d3748;
-            line-height: 1.4;
-            height: 34px;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            margin-bottom: 6px;
-        }
-
-        .product-price {
-            font-size: 14px;
-            font-weight: 700;
-            color: #e53e3e;
-            margin-bottom: 8px;
-        }
-
-        .buy-button {
-            display: block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-            padding: 8px 12px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .buy-button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            margin: 20px 0;
-            padding: 10px;
-        }
-
-        .pagination-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-        }
-
-        .pagination-btn:hover:not(:disabled) {
-            background: #5a67d8;
-            transform: translateY(-1px);
-        }
-
-        .pagination-btn:disabled {
-            background: #cbd5e0;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .page-info {
-            color: #4a5568;
-            font-weight: 600;
-            font-size: 12px;
-            min-width: 80px;
-            text-align: center;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 25px 0 15px;
-        }
-
-        .social-link {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #667eea;
-            font-size: 18px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .social-link:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .footer {
-            text-align: center;
-            color: #718096;
-            font-size: 12px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        .footer p {
-            margin-bottom: 5px;
-        }
-
-        .share-btn {
-            background: linear-gradient(135deg, #ed64a6 0%, #ed8936 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 10px 0;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .share-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(237, 100, 166, 0.3);
-        }
-
-        .admin-panel {
-            display: none;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .admin-content {
-            background: white;
-            padding: 25px;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        .admin-title {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #2d3748;
-            font-size: 22px;
-            font-weight: 700;
-        }
-
-        .admin-form {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-        }
-
-        .form-group label {
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #2d3748;
-            font-size: 14px;
-        }
-
-        .form-group input, .form-group select {
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .admin-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            flex: 1;
-            font-size: 14px;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5a67d8;
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: #e53e3e;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #c53030;
-            transform: translateY(-1px);
-        }
-
-        .admin-hint {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(45, 55, 72, 0.9);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-size: 14px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 1001;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .admin-hint.show {
-            opacity: 1;
-        }
-
-        .no-products {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 40px 20px;
-            color: #718096;
-        }
-
-        .no-products i {
-            font-size: 48px;
-            margin-bottom: 15px;
-            color: #cbd5e0;
-        }
-
-        .no-products p {
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                max-width: 100%;
-                padding: 10px;
-            }
-            
-            .main-card {
-                padding: 25px 20px;
-            }
-            
-            .categories-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .product-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .product-image {
-                height: 150px;
-            }
-        }
-    </style>
+/* Touch improvements */
+@media (hover: none) {
+    .video-card:hover {
+        transform: none;
+    }
+    
+    .filter-btn:hover {
+        background: #fff;
+        color: #666;
+    }
+    
+    .filter-btn.active:hover {
+        background: #ff5314;
+        color: #fff;
+    }
+}
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="main-card">
-            <div class="profile-section">
-                <img src="https://png.pngtree.com/png-clipart/20240814/original/pngtree-chibi-character-doing-shopping-png-image_15771045.png" alt="Profile Picture" class="profile-img">
-                <h1 class="profile-name">Aisah-Shopp</h1>
-                <p class="profile-bio">Selamat datang di toko kami! Kepuasan Anda adalah prioritas utama kami.</p>
-                <p class="profile-bio" style="color: #667eea; font-weight: 600;">Selamat berbelanja 💕</p>
+<div class="container">
+    <header>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div class="logo"><i class="fas fa-play-circle"></i><h1>Aisah-Shopp</h1></div>
+            <div class="search-bar">
+                <input id="searchInput" type="text" placeholder="Cari video...">
+                <button><i class="fas fa-search"></i></button>
             </div>
-            
-            <div class="search-container">
-                <input type="text" id="searchInput" class="search-box" placeholder="🔍 Cari produk...">
-            </div>
-            
-            <div class="categories-container">
-                <div class="categories-title">Kategori Produk</div>
-                <div class="categories-grid" id="categoriesContainer"></div>
-            </div>
+        </div>
+        <nav class="nav-links">
+            <a>Beranda</a>
+            <a>Kategori</a>
+        </nav>
+    </header>
 
-            <div class="products-section">
-                <div class="section-header">
-                    <h2 class="section-title">Koleksi Produk</h2>
-                    <span class="product-count" id="productCount">0 produk</span>
-                </div>
-                
-                <div class="product-grid" id="productGrid"></div>
-
-                <div class="pagination" id="pagination" style="display: none;">
-                    <button class="pagination-btn" id="prevBtn">
-                        <i class="fas fa-chevron-left"></i> Prev
-                    </button>
-                    <div class="page-info" id="pageInfo">Halaman 1 dari 1</div>
-                    <button class="pagination-btn" id="nextBtn">
-                        Next <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="social-links">
-                <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
-            </div>
-            
-            <div class="footer">
-                <button class="share-btn" id="shareBtn">
-                    <i class="fas fa-share-alt"></i> Share Produk
-                </button>
-                <p>© 2024 Aisah-Shopp. All rights reserved.</p>
-                <p style="margin-top: 10px; font-size: 11px; color: #a0aec0;">
-                    Tekan <kbd>Shift</kbd> + <kbd>A</kbd> untuk Panel Admin
-                </p>
-            </div>
+    <div class="filters-container">
+        <div class="filters-scroll">
+            <button class="filter-btn active">Semua</button>
+            <button class="filter-btn">Pakaian Pria</button>
+            <button class="filter-btn">Pakaian Wanita</button>
+            <button class="filter-btn">Elektronik</button>
+            <button class="filter-btn">Kecantikan</button>
+            <button class="filter-btn">Rumah Tangga</button>
+            <button class="filter-btn">Gaming</button>
+            <button class="filter-btn">Aksesoris HP</button>
+            <button class="filter-btn">Dapur</button>
         </div>
     </div>
 
-    <div class="admin-panel" id="adminPanel">
-        <div class="admin-content">
-            <h2 class="admin-title">Panel Admin</h2>
-            <div class="admin-form">
-                <input type="hidden" id="editIndex">
-                <div class="form-group">
-                    <label for="productName">Nama Produk</label>
-                    <input type="text" id="productName" placeholder="Contoh: Kaos Fashion Pria">
-                </div>
-                <div class="form-group">
-                    <label for="productCategory">Kategori Produk</label>
-                    <select id="productCategory">
-                        <option value="fashion">Fashion</option>
-                        <option value="elektronik">Elektronik</option>
-                        <option value="kecantikan">Kecantikan</option>
-                        <option value="rumah-tangga">Rumah Tangga</option>
-                        <option value="hobi">Hobi</option>
-                        <option value="lainnya">Lainnya</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="productPrice">Harga Produk</label>
-                    <input type="text" id="productPrice" placeholder="Contoh: Rp150.000">
-                </div>
-                <div class="form-group">
-                    <label for="productImage">URL Gambar Produk</label>
-                    <input type="text" id="productImage" placeholder="Masukkan URL gambar produk">
-                </div>
-                <div class="form-group">
-                    <label for="productLink">Link Shopee</label>
-                    <input type="text" id="productLink" placeholder="Masukkan link produk Shopee">
-                </div>
-                <div class="admin-buttons">
-                    <button class="btn btn-primary" id="saveProduct">Simpan Produk</button>
-                    <button class="btn btn-secondary" id="closeAdmin">Tutup Panel</button>
-                </div>
+    <div id="videoContainer" class="video-grid"></div>
+</div>
+
+<!-- MODAL -->
+<div id="videoModal" class="modal">
+    <div class="modal-box" id="modalBox">
+        <button class="modal-close" id="closeModal">&times;</button>
+
+        <div class="modal-content-row">
+            <div class="modal-left">
+                <div class="modal-video-wrap" id="modalVideo"></div>
+            </div>
+            <div class="modal-right">
+                <div class="image-grid" id="imageGallery"></div>
             </div>
         </div>
+
+        <div class="modal-details">
+            <h3 id="modalTitle"></h3>
+            <p id="modalDescription"></p>
+            <a id="modalProductLink" class="product-link" target="_blank">Lihat Produk</a>
+        </div>
     </div>
+</div>
 
-    <div class="admin-hint" id="adminHint"></div>
+<!-- IMAGE VIEWER -->
+<div class="img-viewer" id="imgViewer">
+    <button class="img-viewer-btn img-prev" id="imgPrev">&#10094;</button>
+    <img id="imgViewerImg" src="">
+    <button class="img-viewer-btn img-next" id="imgNext">&#10095;</button>
+    <button class="img-viewer-close" id="imgViewerClose">&times;</button>
+</div>
 
-    <script>
-        // ===== KONFIGURASI =====
-        const STORAGE_KEY = 'aisah_shopp_data';
-        const PRODUCTS_PER_PAGE = 8;
-        const CATEGORIES = [
-            { id: 'all', name: 'Semua' },
-            { id: 'fashion', name: 'Fashion' },
-            { id: 'elektronik', name: 'Elektronik' },
-            { id: 'kecantikan', name: 'Kecantikan' },
-            { id: 'rumah-tangga', name: 'Rumah Tangga' },
-            { id: 'hobi', name: 'Hobi' },
-            { id: 'lainnya', name: 'Lainnya' }
-        ];
+<script>
+const BLOG_ID = "5725416963670414367";
+const API_KEY = "AIzaSyA8k0Fr9m-7zsC1EzdOjI3kgMR92bJHs_E";
 
-        // ===== VARIABEL GLOBAL =====
-        let products = [];
-        let currentPage = 1;
-        let totalPages = 1;
-        let currentCategory = 'all';
-        let currentSearch = '';
+const videoContainer = document.getElementById("videoContainer");
+let currentVideos = [];
+function parseHTML(post){
+    return new DOMParser().parseFromString(post.content || "", "text/html");
+}
 
-        // ===== FUNGSI UTAMA =====
-        function initializeApp() {
-            loadProducts();
-            setupEventListeners();
-            checkUrlForSharedData();
-            renderCategories();
-            renderProducts();
-        }
+function extractThumbnail(p){
+    const doc = parseHTML(p);
+    return doc.querySelector(".thumbnail")?.textContent?.trim() ||
+           doc.querySelector("img")?.src ||
+           "https://via.placeholder.com/600x800?text=No+Image";
+}
+function extractVideoUrl(p){
+    const doc = parseHTML(p);
+    return doc.querySelector(".video_url")?.textContent?.trim() ||
+           doc.querySelector("iframe")?.src || "";
+}
+function extractDescription(p){
+    const doc = parseHTML(p);
+    return doc.querySelector(".video-description")?.textContent?.trim() || "";
+}
+function extractProductLink(p){
+    const doc = parseHTML(p);
+    return doc.querySelector(".product_link")?.textContent?.trim() ||
+           doc.querySelector("a[href*='shopee']")?.href || "#";
+}
+function extractGallery(p){
+    const doc = parseHTML(p);
+    const raw = doc.querySelector(".gallery")?.textContent?.trim();
+    if(!raw) return [];
+    return raw.split(",").map(x=>x.trim()).filter(x=>x.length>5);
+}
 
-        function loadProducts() {
-            try {
-                const stored = localStorage.getItem(STORAGE_KEY);
-                products = stored ? JSON.parse(stored) : [];
-            } catch (e) {
-                products = [];
-                console.error('Error loading products:', e);
-            }
-        }
+// NEW: extractPrice function
+function extractPrice(p){
+    try{
+        const doc = parseHTML(p);
+        return doc.querySelector('.product_price')?.textContent?.trim() || "-";
+    }catch(e){
+        return "-";
+    }
+}
 
-        function saveProducts() {
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-                return true;
-            } catch (e) {
-                console.error('Error saving products:', e);
-                return false;
-            }
-        }
+async function loadVideos(){
+    const url = `https://www.googleapis.com/blogger/v3/blogs/${BLOG_ID}/posts?key=${API_KEY}&maxResults=30`;
+    const res = await fetch(url);
+    const data = await res.json();
 
-        // ===== SHARE SYSTEM =====
-        function generateShareLink() {
-            if (products.length === 0) {
-                showHint('Tidak ada produk untuk dibagikan!');
-                return;
-            }
+    currentVideos = data.items.map(p=>({
+        id:p.id,
+        title:p.title,
+        thumbnail:extractThumbnail(p),
+        videoUrl:extractVideoUrl(p),
+        productLink:extractProductLink(p),
+        description:extractDescription(p),
+        gallery:extractGallery(p),
+        price: extractPrice(p),
+        labels: p.labels || []
+    }));
 
-            try {
-                const dataString = JSON.stringify(products);
-                const compressedData = LZString.compressToEncodedURIComponent(dataString);
-                const baseUrl = window.location.origin + window.location.pathname;
-                const shareLink = `${baseUrl}?share=${compressedData}`;
-                
-                copyToClipboard(shareLink);
-                showHint('✅ Link berhasil disalin!');
-            } catch (error) {
-                console.error('Share error:', error);
-                showHint('❌ Gagal membuat link share');
-            }
-        }
+    renderList(currentVideos);
 
-        function checkUrlForSharedData() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const shareData = urlParams.get('share');
-            
-            if (shareData) {
-                try {
-                    const decompressed = LZString.decompressFromEncodedURIComponent(shareData);
-                    if (decompressed) {
-                        const sharedProducts = JSON.parse(decompressed);
-                        if (Array.isArray(sharedProducts) && sharedProducts.length > 0) {
-                            // OTOMATIS LOAD TANPA KONFIRMASI
-                            products = sharedProducts;
-                            saveProducts();
-                            renderProducts();
-                            renderCategories();
-                                                        
-                            // Bersihkan URL
-                            cleanUrl();
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error loading shared data:', error);
-                }
-            }
-        }
+    initFilters();
+}
 
-        function cleanUrl() {
-            try {
-                const cleanUrl = window.location.origin + window.location.pathname;
-                window.history.replaceState({}, document.title, cleanUrl);
-            } catch (e) {
-                console.log('Cannot clean URL');
-            }
-        }
+function renderList(list){
+    videoContainer.innerHTML = "";
+    list.forEach(v=>{
+        const card = document.createElement("div");
+        card.className = "video-card";
+        card.innerHTML = `
+            <div class="video-thumb">
+                <img src="${v.thumbnail}" alt="${v.title}">
+                <div class="video-duration">Video</div>
+            </div>
+            <div class="video-info">
+                <h3>${v.title}</h3>
+                <div class="video-meta"><span>${v.price || 'Harga'}</span></div>
+                <div class="video-actions">
+                    <a href="#" class="watch-btn" data-id="${v.id}">Tonton</a>
+                    <a class="buy-btn" href="${v.productLink}" target="_blank">Beli</a>
+                </div>
+            </div>`;
 
-        function copyToClipboard(text) {
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(text);
+        card.querySelector(".watch-btn").onclick = e=>{
+            e.preventDefault();
+            openModal(v.id);
+        };
+        videoContainer.appendChild(card);
+    });
+}
+
+function openModal(id){
+    const v = currentVideos.find(x=>x.id===id);
+    if(!v) return;
+
+    document.getElementById("modalTitle").textContent = v.title;
+    document.getElementById("modalDescription").textContent = v.description;
+    document.getElementById("modalProductLink").href = v.productLink;
+    document.getElementById("modalVideo").innerHTML = `<iframe src="${v.videoUrl}?autoplay=1" allowfullscreen></iframe>`;
+
+    const grid = document.getElementById("imageGallery");
+    grid.innerHTML = "";
+    v.gallery.forEach((src,i)=>{
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = `Gambar produk ${i+1}`;
+        img.onclick = ()=>openImageViewer(i,v.gallery);
+        grid.appendChild(img);
+    });
+
+    document.getElementById("videoModal").classList.add("open");
+}
+
+document.getElementById("closeModal").onclick = ()=>{
+    document.getElementById("videoModal").classList.remove("open");
+    document.getElementById("modalVideo").innerHTML="";
+};
+
+let currentGallery=[];
+let currentIndex=0;
+
+function openImageViewer(i,gallery){
+    currentGallery = gallery;
+    currentIndex = i;
+    document.getElementById("imgViewerImg").src = gallery[i];
+    document.getElementById("imgViewer").classList.add("open");
+}
+
+document.getElementById("imgPrev").onclick = ()=>{
+    if(!currentGallery.length) return;
+    currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length;
+    document.getElementById("imgViewerImg").src = currentGallery[currentIndex];
+};
+
+document.getElementById("imgNext").onclick = ()=>{
+    if(!currentGallery.length) return;
+    currentIndex = (currentIndex + 1) % currentGallery.length;
+    document.getElementById("imgViewerImg").src = currentGallery[currentIndex];
+};
+
+document.getElementById("imgViewerClose").onclick = ()=>{
+    document.getElementById("imgViewer").classList.remove("open");
+};
+
+loadVideos();
+function initFilters(){
+    document.querySelectorAll('.filter-btn').forEach(btn=>{
+        btn.onclick = ()=>{
+            document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const label = btn.textContent.trim().toLowerCase();
+
+            if(label === "semua"){
+                renderList(currentVideos);
             } else {
-                // Fallback untuk browser lama
-                const input = document.createElement('input');
-                input.value = text;
-                document.body.appendChild(input);
-                input.select();
-                document.execCommand('copy');
-                document.body.removeChild(input);
+                const filtered = currentVideos.filter(v =>
+                    (v.labels || []).map(x=>x.toLowerCase()).includes(label)
+                );
+                renderList(filtered);
             }
-        }
+        };
+    });
+}
 
-        // ===== RENDER FUNCTIONS =====
-        function renderCategories() {
-            const container = document.getElementById('categoriesContainer');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            CATEGORIES.forEach(category => {
-                const btn = document.createElement('button');
-                btn.className = `category-btn ${currentCategory === category.id ? 'active' : ''}`;
-                btn.textContent = category.name;
-                btn.onclick = () => setCategory(category.id);
-                container.appendChild(btn);
-            });
-        }
+// Search functionality
+document.querySelector('.search-bar button').addEventListener('click', performSearch);
+document.getElementById('searchInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        performSearch();
+    }
+});
 
-        function renderProducts() {
-            const grid = document.getElementById('productGrid');
-            const count = document.getElementById('productCount');
-            if (!grid || !count) return;
-            
-            const filtered = getFilteredProducts();
-            const productsToShow = getProductsForPage(currentPage);
-            
-            grid.innerHTML = '';
-            
-            if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="no-products">
-                        <i class="fas fa-box-open"></i>
-                        <p>${products.length === 0 ? 'Belum ada produk' : 'Tidak ada produk yang cocok'}</p>
-                        <p style="font-size: 13px; color: #95a5a6; margin-top: 10px;">
-                            Tekan <kbd>Shift</kbd> + <kbd>A</kbd> untuk menambah produk pertama
-                        </p>
-                    </div>
-                `;
-            } else {
-                productsToShow.forEach(product => {
-                    const categoryName = CATEGORIES.find(cat => cat.id === product.category)?.name || 'Lainnya';
-                    const card = document.createElement('div');
-                    card.className = 'product-card';
-                    card.innerHTML = `
-                        <img src="${product.image}" alt="${product.name}" class="product-image" 
-                             onerror="this.src='https://via.placeholder.com/300x400/ffffff/666666?text=Gambar+Tidak+Ada'">
-                        <div class="product-info">
-                            <div class="product-category">${categoryName}</div>
-                            <div class="product-name">${product.name}</div>
-                            <div class="product-price">${product.price}</div>
-                            <a href="${product.link}" class="buy-button" target="_blank">Beli Sekarang</a>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-            }
-            
-            // Update counter
-            const totalCount = products.length;
-            const filteredCount = filtered.length;
-            count.textContent = `${filteredCount} produk${currentSearch || currentCategory !== 'all' ? ` (dari ${totalCount} total)` : ''}`;
-            
-            updatePagination();
-        }
-
-        function updatePagination() {
-            const pagination = document.getElementById('pagination');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const pageInfo = document.getElementById('pageInfo');
-            
-            if (!pagination || !prevBtn || !nextBtn || !pageInfo) return;
-            
-            totalPages = Math.ceil(getFilteredProducts().length / PRODUCTS_PER_PAGE);
-            
-            if (totalPages <= 1) {
-                pagination.style.display = 'none';
-            } else {
-                pagination.style.display = 'flex';
-            }
-            
-            prevBtn.disabled = currentPage === 1;
-            nextBtn.disabled = currentPage === totalPages;
-            pageInfo.textContent = `Halaman ${currentPage} dari ${totalPages}`;
-        }
-
-        // ===== HELPER FUNCTIONS =====
-        function getFilteredProducts() {
-            return products.filter(product => {
-                const matchesCategory = currentCategory === 'all' || product.category === currentCategory;
-                const matchesSearch = product.name.toLowerCase().includes(currentSearch.toLowerCase()) ||
-                                    product.price.toLowerCase().includes(currentSearch.toLowerCase());
-                return matchesCategory && matchesSearch;
-            });
-        }
-
-        function getProductsForPage(page) {
-            const filtered = getFilteredProducts();
-            const start = (page - 1) * PRODUCTS_PER_PAGE;
-            const end = start + PRODUCTS_PER_PAGE;
-            return filtered.slice(start, end);
-        }
-
-        function setCategory(categoryId) {
-            currentCategory = categoryId;
-            currentPage = 1;
-            renderCategories();
-            renderProducts();
-        }
-
-        function changePage(direction) {
-            const newPage = currentPage + direction;
-            if (newPage >= 1 && newPage <= totalPages) {
-                currentPage = newPage;
-                renderProducts();
-            }
-        }
-
-        function showHint(message) {
-            const hint = document.getElementById('adminHint');
-            if (!hint) return;
-            
-            hint.textContent = message;
-            hint.classList.add('show');
-            setTimeout(() => {
-                hint.classList.remove('show');
-            }, 3000);
-        }
-
-        // ===== ADMIN FUNCTIONS =====
-        function toggleAdminPanel() {
-            const panel = document.getElementById('adminPanel');
-            if (!panel) return;
-            
-            if (panel.style.display === 'flex') {
-                panel.style.display = 'none';
-                showHint('Panel Admin Ditutup');
-                resetForm();
-            } else {
-                panel.style.display = 'flex';
-            }
-        }
-
-        function saveProduct() {
-            const name = document.getElementById('productName').value.trim();
-            const price = document.getElementById('productPrice').value.trim();
-            const image = document.getElementById('productImage').value.trim();
-            const link = document.getElementById('productLink').value.trim();
-            const category = document.getElementById('productCategory').value;
-            const editIndex = document.getElementById('editIndex').value;
-
-            if (!name || !price || !image || !link) {
-                alert('Harap isi semua field!');
-                return;
-            }
-
-            const product = { name, price, image, link, category };
-
-            if (editIndex === '') {
-                products.push(product);
-                showHint('✅ Produk berhasil ditambahkan!');
-            } else {
-                products[editIndex] = product;
-                showHint('✅ Produk berhasil diupdate!');
-                document.getElementById('editIndex').value = '';
-            }
-
-            saveProducts();
-            renderProducts();
-            renderCategories();
-            resetForm();
-            
-            // Auto scroll ke halaman terakhir jika tambah produk baru
-            if (editIndex === '') {
-                totalPages = Math.ceil(getFilteredProducts().length / PRODUCTS_PER_PAGE);
-                currentPage = totalPages;
-                renderProducts();
-            }
-        }
-
-        function resetForm() {
-            document.getElementById('productName').value = '';
-            document.getElementById('productPrice').value = '';
-            document.getElementById('productImage').value = '';
-            document.getElementById('productLink').value = '';
-            document.getElementById('productCategory').value = 'fashion';
-        }
-
-        // ===== EVENT LISTENERS =====
-        function setupEventListeners() {
-            // Search
-            const searchInput = document.getElementById('searchInput');
-            if (searchInput) {
-                searchInput.addEventListener('input', (e) => {
-                    currentSearch = e.target.value;
-                    currentPage = 1;
-                    renderProducts();
-                });
-            }
-
-            // Pagination
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            if (prevBtn) prevBtn.onclick = () => changePage(-1);
-            if (nextBtn) nextBtn.onclick = () => changePage(1);
-
-            // Share button
-            const shareBtn = document.getElementById('shareBtn');
-            if (shareBtn) shareBtn.onclick = generateShareLink;
-
-            // Admin buttons
-            const saveBtn = document.getElementById('saveProduct');
-            const closeBtn = document.getElementById('closeAdmin');
-            if (saveBtn) saveBtn.onclick = saveProduct;
-            if (closeBtn) closeBtn.onclick = toggleAdminPanel;
-
-            // Keyboard shortcut
-            document.addEventListener('keydown', (e) => {
-                if (e.shiftKey && e.key === 'A') {
-                    e.preventDefault();
-                    toggleAdminPanel();
-                }
-            });
-        }
-
-        // ===== INITIALIZE APP =====
-        document.addEventListener('DOMContentLoaded', initializeApp);
-    </script>
+function performSearch() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    
+    if (searchTerm === '') {
+        renderList(currentVideos);
+        return;
+    }
+    
+    const filtered = currentVideos.filter(v => 
+        v.title.toLowerCase().includes(searchTerm) || 
+        v.description.toLowerCase().includes(searchTerm)
+    );
+    
+    renderList(filtered);
+}
+</script>
 </body>
 </html>
