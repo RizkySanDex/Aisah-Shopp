@@ -315,6 +315,13 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
     color: #777;
 }
 
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #777;
+    font-size: 1rem;
+}
+
 /* MEDIA QUERIES UNTUK RESPONSIVITAS MOBILE */
 @media(max-width:768px){
     .modal-content-row{flex-direction:column}
@@ -532,11 +539,9 @@ header{display:flex;justify-content:space-between;align-items:center;margin-bott
             <button class="filter-btn">Elektronik</button>
             <button class="filter-btn">Kecantikan</button>
             <button class="filter-btn">Rumah Tangga</button>
-            <button class="filter-btn">Jam</button>
-			<button class="filter-btn">Sepatu</button>
-			<button class="filter-btn">Tas</button>
+            <button class="filter-btn">Gaming</button>
+            <button class="filter-btn">Aksesoris HP</button>
             <button class="filter-btn">Dapur</button>
-            <button class="filter-btn">HP & Aksesoris</button>
         </div>
     </div>
 
@@ -616,7 +621,7 @@ const paginationContainer = document.getElementById("paginationContainer");
 
 let currentVideos = [];
 let currentPage = 1;
-const videosPerPage = 18; // DIUBAH: 18 video per halaman
+const videosPerPage = 18; // 18 video per halaman
 
 function parseHTML(post){
     return new DOMParser().parseFromString(post.content || "", "text/html");
@@ -659,27 +664,67 @@ function extractPrice(p){
     }
 }
 
+// Fungsi untuk mengambil semua video dari Blogger API
+async function loadAllVideos() {
+    let allVideos = [];
+    let nextPageToken = null;
+    let page = 1;
+    
+    // Tampilkan loading
+    videoContainer.innerHTML = '<div class="loading">Memuat video...</div>';
+    
+    try {
+        // Loop untuk mengambil semua halaman
+        do {
+            let url = `https://www.googleapis.com/blogger/v3/blogs/${BLOG_ID}/posts?key=${API_KEY}&maxResults=500`;
+            
+            if (nextPageToken) {
+                url += `&pageToken=${nextPageToken}`;
+            }
+            
+            const res = await fetch(url);
+            const data = await res.json();
+            
+            if (data.items && data.items.length > 0) {
+                const pageVideos = data.items.map(p => ({
+                    id: p.id,
+                    title: p.title,
+                    thumbnail: extractThumbnail(p),
+                    videoUrl: extractVideoUrl(p),
+                    productLink: extractProductLink(p),
+                    description: extractDescription(p),
+                    gallery: extractGallery(p),
+                    price: extractPrice(p),
+                    labels: p.labels || []
+                }));
+                
+                allVideos = allVideos.concat(pageVideos);
+                console.log(`Halaman ${page}: ${pageVideos.length} video`);
+            }
+            
+            nextPageToken = data.nextPageToken || null;
+            page++;
+            
+        } while (nextPageToken);
+        
+        console.log(`Total video yang diambil: ${allVideos.length}`);
+        return allVideos;
+        
+    } catch (error) {
+        console.error('Error mengambil video:', error);
+        videoContainer.innerHTML = '<div class="loading">Error memuat video. Silakan refresh halaman.</div>';
+        return [];
+    }
+}
+
 async function loadVideos(){
-    const url = `https://www.googleapis.com/blogger/v3/blogs/${BLOG_ID}/posts?key=${API_KEY}&maxResults=30`;
-    const res = await fetch(url);
-    const data = await res.json();
-
-    currentVideos = data.items.map(p=>({
-        id:p.id,
-        title:p.title,
-        thumbnail:extractThumbnail(p),
-        videoUrl:extractVideoUrl(p),
-        productLink:extractProductLink(p),
-        description:extractDescription(p),
-        gallery:extractGallery(p),
-        price: extractPrice(p),
-        labels: p.labels || []
-    }));
-
-    renderList(currentVideos);
-    renderPagination(currentVideos.length);
-
-    initFilters();
+    currentVideos = await loadAllVideos();
+    
+    if (currentVideos.length > 0) {
+        renderList(currentVideos);
+        renderPagination(currentVideos.length);
+        initFilters();
+    }
 }
 
 function renderList(list){
@@ -689,12 +734,18 @@ function renderList(list){
     const videosToShow = list.slice(startIndex, endIndex);
     
     videoContainer.innerHTML = "";
+    
+    if (videosToShow.length === 0) {
+        videoContainer.innerHTML = '<div class="loading">Tidak ada video yang ditemukan.</div>';
+        return;
+    }
+    
     videosToShow.forEach(v=>{
         const card = document.createElement("div");
         card.className = "video-card";
         card.innerHTML = `
             <div class="video-thumb">
-                <img src="${v.thumbnail}" alt="${v.title}">
+                <img src="${v.thumbnail}" alt="${v.title}" loading="lazy">
                 <div class="video-duration"></div>
             </div>
             <div class="video-info">
@@ -871,6 +922,7 @@ document.getElementById("imgViewerClose").onclick = ()=>{
 };
 
 loadVideos();
+
 function initFilters(){
     document.querySelectorAll('.filter-btn').forEach(btn=>{
         btn.onclick = ()=>{
